@@ -5,6 +5,8 @@ class Section {
     private String name;
     private List<Book> books;
 
+    private String ceva;
+
     public Section(String name) {
         this.name = name;
         this.books = new ArrayList<>();
