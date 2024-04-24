@@ -1,3 +1,3 @@
 # OOP-project
 
-proiect poo java
+proiect poo
