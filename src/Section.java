@@ -2,11 +2,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 class Section {
-    private String name;
     private List<Book> books;
 
-    public Section(String name) {
-        this.name = name;
+    public Section() {
         this.books = new ArrayList<>();
     }
 
@@ -19,15 +17,4 @@ class Section {
     public List<Book> getBooks() {
         return books;
     }
-
-    // Get the name of this section
-    public String getName() {
-        return name;
-    }
 }
-
-
-
-
-
-
