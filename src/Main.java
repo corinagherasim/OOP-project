@@ -1,5 +1,6 @@
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Scanner;
 
 // Enum representing book availability status
 enum Availability {
@@ -61,6 +62,7 @@ public class Main {
 
         //Display all books from library
         library.displayAllBooks();
+
         LocalDate borrowDate = LocalDate.parse("2024-04-26");
         library.borrowBook(book4, reader1, borrowDate);
 
@@ -118,6 +120,175 @@ public class Main {
         } else {
             System.out.println("No matching books found.");
         }
+
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("\n");
+        System.out.println("Please select one of the following commands for more information.");
+        System.out.println("1. Display all books in the library");
+        System.out.println("2. Add books to the library");
+        System.out.println("3. Remove books from the library");
+        System.out.println("4. Search books");
+        System.out.println("0.Exit");
+
+        String option;
+        do{
+//            System.out.println("\n");
+//            System.out.println("Please select one of the following commands for more information.");
+//            System.out.println("1. Display all books in the library");
+//            System.out.println("2. Add books to the library");
+//            System.out.println("3. Remove books from the library");
+//            System.out.println("4. Search books");
+//            System.out.println("0.Exit");
+
+            option = scanner.next();
+            scanner.nextLine();
+            switch(option){
+                case "0":
+                    System.out.println("Exiting menu...");
+                    break;
+                case "1":
+                    library.displayAllBooks();
+                    break;
+                case "2":
+                    String bookTitle;
+                    String bookAuthor;
+                    Genre bookGenre;
+
+                    System.out.print("Enter book title: ");
+                    bookTitle = scanner.nextLine();
+
+                    System.out.print("Enter book author: ");
+                    bookAuthor = scanner.nextLine();
+
+                    System.out.println("Select book genre:");
+                    System.out.println("1. FICTION");
+                    System.out.println("2. NON_FICTION");
+                    System.out.println("3. MYSTERY");
+                    System.out.println("4. ROMANCE");
+                    System.out.println("5. HORROR");
+                    System.out.println("6. KIDS");
+
+                    String genreChoice = scanner.next();
+                    scanner.nextLine();
+                    switch (genreChoice) {
+                        case "1":
+                            bookGenre = Genre.FICTION;
+                            break;
+                        case "2":
+                            bookGenre = Genre.NON_FICTION;
+                            break;
+                        case "3":
+                            bookGenre = Genre.MYSTERY;
+                            break;
+                        case "4":
+                            bookGenre = Genre.ROMANCE;
+                            break;
+                        case "5":
+                            bookGenre = Genre.HORROR;
+                            break;
+                        case "6":
+                            bookGenre = Genre.KIDS;
+                            break;
+                        default:
+                            System.out.println("Invalid genre choice. Defaulting to FICTION.");
+                            bookGenre = Genre.FICTION;
+                    }
+
+                    Book book = new Book(bookTitle, new Author(bookAuthor), bookGenre);
+                    library.addBook(book);
+                    break;
+                case "3":
+                    System.out.println("Enter the title of the book you want to remove:");
+                    String removedBookTitle = scanner.nextLine();
+                    library.removeBookByTitle(removedBookTitle);
+                    break;
+                case "4":
+                    System.out.println("Search the book by:");
+                    System.out.println("1. title");
+                    System.out.println("2. author");
+                    System.out.println("3. genre");
+
+                    String searchType = scanner.next();
+                    scanner.nextLine();
+                    switch (searchType){
+                        case "1":
+                            String searchTitle = scanner.nextLine();
+                            List<Book> listByTitle = library.searchByTitle(searchTitle);
+                            if (!listByTitle.isEmpty()) {
+                                System.out.println("Books found:");
+                                for (Book bookSearchedTitle : listByTitle) {
+                                    System.out.println("Title: " + bookSearchedTitle.getTitle() + ", Author: " + bookSearchedTitle.getAuthor().getName() + ", Genre: " + bookSearchedTitle.getGenre() + "Availability: " + bookSearchedTitle.getAvailability());
+                                }
+                            } else {
+                                System.out.println("No matching books found.");
+                            }
+                            break;
+                        case "2":
+                            String searchAuthor = scanner.nextLine();
+                            List<Book> listByAuthor = library.searchByAuthor(searchAuthor);
+                            if (!listByAuthor.isEmpty()) {
+                                System.out.println("Books found:");
+                                for (Book bookSearchedAuthor : listByAuthor) {
+                                    System.out.println("Title: " + bookSearchedAuthor.getTitle() + ", Author: " + bookSearchedAuthor.getAuthor().getName() + ", Genre: " + bookSearchedAuthor.getGenre() + "Availability: " + bookSearchedAuthor.getAvailability());
+                                }
+                            } else {
+                                System.out.println("No matching books found.");
+                            }
+                            break;
+                        case "3":
+                            System.out.println("Select book genre:");
+                            System.out.println("1. FICTION");
+                            System.out.println("2. NON_FICTION");
+                            System.out.println("3. MYSTERY");
+                            System.out.println("4. ROMANCE");
+                            System.out.println("5. HORROR");
+                            System.out.println("6. KIDS");
+
+                            Genre searchGenre;
+                            String genreChoiceForSearch = scanner.next();
+                            scanner.nextLine();
+                            switch (genreChoiceForSearch) {
+                                case "1":
+                                    searchGenre = Genre.FICTION;
+                                    break;
+                                case "2":
+                                    searchGenre = Genre.NON_FICTION;
+                                    break;
+                                case "3":
+                                    searchGenre = Genre.MYSTERY;
+                                    break;
+                                case "4":
+                                    searchGenre = Genre.ROMANCE;
+                                    break;
+                                case "5":
+                                    searchGenre = Genre.HORROR;
+                                    break;
+                                case "6":
+                                    searchGenre = Genre.KIDS;
+                                    break;
+                                default:
+                                    System.out.println("Invalid genre choice. Defaulting to FICTION.");
+                                    searchGenre = Genre.FICTION;
+                            }
+                            List<Book> listByGenre = library.searchByGenre(searchGenre);
+                            if (!listByGenre.isEmpty()) {
+                                System.out.println("Books found:");
+                                for (Book bookSearchedGenre : listByGenre) {
+                                    System.out.println("Title: " + bookSearchedGenre.getTitle() + ", Author: " + bookSearchedGenre.getAuthor().getName() + ", Genre: " + bookSearchedGenre.getGenre() + "Availability: " + bookSearchedGenre.getAvailability());
+                                }
+                            } else {
+                                System.out.println("No matching books found.");
+                            }
+                            break;
+                        default:
+                            System.out.println("Invalid option");
+                    }
+                    break;
+                default:
+                    System.out.println("Invalid option");
+            }
+        }while(!option.equals("0"));
     }
 }
 

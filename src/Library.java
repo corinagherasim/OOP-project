@@ -71,6 +71,29 @@ public class Library {
         }
     }
 
+    public void removeBookByTitle(String title) {
+        // Iterate over the list of books in the library
+        for (Book book : books) {
+            // Check if the current book's title matches the specified title
+            if (book.getTitle().equals(title)) {
+                // Remove the book from the list of books
+                books.remove(book);
+                // Remove the book from its section (if sections are being used)
+                for (Section section : sections.values()) {
+                    if (section.getBooks().contains(book)) {
+                        section.getBooks().remove(book);
+                        break;
+                    }
+                }
+
+                System.out.println("Book '" + title + "' has been removed from the library.");
+                return;
+            }
+        }
+
+        System.out.println("No book with the title '" + title + "' found in the library.");
+    }
+
 
     //Displays all books from a library
     public void displayAllBooks() {
