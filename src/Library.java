@@ -107,29 +107,33 @@ public class Library {
         }
     }
 
-    public void removeBookByTitle(String title) {
-        // Iterate over the list of books in the library
-        for (Book book : books) {
-            // Check if the current book's title matches the specified title
-            if (book.getTitle().equals(title)) {
-                // Remove the book from the list of books
-                books.remove(book);
-                // Remove the book from its section (if sections are being used)
-                for (Section section : sections.values()) {
-                    if (section.getBooks().contains(book)) {
-                        section.getBooks().remove(book);
-                        break;
+        public void removeBookByTitle(String title) throws BookNotFoundException{
+            // To later check if the book has been found
+            boolean bookRemoved = false;
+            // Iterate over the list of books in the library
+            for (Book book : books) {
+                // Check if the current book's title matches the specified title
+                if (book.getTitle().equals(title)) {
+                    // Remove the book from the list of books
+                    books.remove(book);
+                    // Remove the book from its section (if sections are being used)
+                    for (Section section : sections.values()) {
+                        if (section.getBooks().contains(book)) {
+                            section.getBooks().remove(book);
+                            break;
+                        }
                     }
-                }
 
-                System.out.println("Book '" + title + "' has been removed from the library.");
-                return;
+                    System.out.println("Book '" + title + "' has been removed from the library.");
+                    bookRemoved = true;
+                    break;
+                }
+            }
+
+            if (!bookRemoved){
+                throw new BookNotFoundException("Book with title '" + title + "' not found in the library.");
             }
         }
-
-        System.out.println("No book with the title '" + title + "' found in the library.");
-    }
-
 
     //Displays all books from a library
     public void displayAllBooks() {
@@ -166,11 +170,6 @@ public class Library {
         }
     }
 
-
-
-
-
-
     //Displays all the details about a book
     public void viewBookDetails(String title) {
         boolean found = false;
@@ -205,31 +204,40 @@ public class Library {
     }
 
     // Search by book genre, title or author
-    public List<Book> searchByAuthor(String authorName) {
+    public List<Book> searchByAuthor(String authorName) throws BookNotFoundException{
         List<Book> matchingBooks = new ArrayList<>();
         for (Book book : books) {
             if (book.getAuthor().getName().equalsIgnoreCase(authorName)) {
                 matchingBooks.add(book);
             }
         }
+        if (matchingBooks.isEmpty()) {
+            throw new BookNotFoundException("No books with the author being " + authorName + " found.");
+        }
         return matchingBooks;
     }
 
-    public List<Book> searchByGenre(Genre genre) {
+    public List<Book> searchByGenre(Genre genre) throws BookNotFoundException{
         List<Book> matchingBooks = new ArrayList<>();
         Section section = sections.get(genre);
         if (section != null) {
             matchingBooks.addAll(section.getBooks());
         }
+        if (matchingBooks.isEmpty()) {
+            throw new BookNotFoundException("No " + genre + " books found.");
+        }
         return matchingBooks;
     }
 
-    public List<Book> searchByTitle(String title) {
+    public List<Book> searchByTitle(String title) throws BookNotFoundException {
         List<Book> matchingBooks = new ArrayList<>();
         for (Book book : books) {
             if (book.getTitle().equalsIgnoreCase(title)) {
                 matchingBooks.add(book);
             }
+        }
+        if (matchingBooks.isEmpty()) {
+            throw new BookNotFoundException("No books with the title '" + title + "' found.");
         }
         return matchingBooks;
     }

@@ -93,37 +93,6 @@ public class Main {
         //Display all the details about a book from the library
         library.viewBookDetails("Harry Potter and the Philosopher's Stone");
 
-        //Search books
-        List<Book> fictionBooks = library.searchByGenre(Genre.FICTION);
-        if (!fictionBooks.isEmpty()) {
-            System.out.println("Books found:");
-            for (Book book : fictionBooks) {
-                System.out.println("Title: " + book.getTitle() + ", Author: " + book.getAuthor().getName() + ", Genre: " + book.getGenre());
-            }
-        } else {
-            System.out.println("No matching books found.");
-        }
-
-        List<Book> booksByTitle = library.searchByTitle("The Great Gatsby");
-        if (!booksByTitle.isEmpty()) {
-            System.out.println("Books found:");
-            for (Book book : booksByTitle) {
-                System.out.println("Title: " + book.getTitle() + ", Author: " + book.getAuthor().getName() + ", Genre: " + book.getGenre());
-            }
-        } else {
-            System.out.println("No matching books found.");
-        }
-
-        List<Book> booksByAuthor = library.searchByAuthor("J.K. Rowling");
-        if (!booksByAuthor.isEmpty()) {
-            System.out.println("Books found:");
-            for (Book book : booksByAuthor) {
-                System.out.println("Title: " + book.getTitle() + ", Author: " + book.getAuthor().getName() + ", Genre: " + book.getGenre());
-            }
-        } else {
-            System.out.println("No matching books found.");
-        }
-
         Scanner scanner = new Scanner(System.in);
 
 //        System.out.println("\n");
@@ -212,9 +181,13 @@ public class Main {
                     library.addBook(book);
                     break;
                 case "3":
-                    System.out.println("Enter the title of the book you want to remove:");
-                    String removedBookTitle = scanner.nextLine();
-                    library.removeBookByTitle(removedBookTitle);
+                    try{
+                        System.out.println("Enter the title of the book you want to remove:");
+                        String removedBookTitle = scanner.nextLine();
+                        library.removeBookByTitle(removedBookTitle);
+                    }catch (BookNotFoundException e) {
+                        System.out.println("Error: " + e.getMessage());
+                    }
                     break;
                 case "4":
                     System.out.println("Search the book by:");
@@ -226,27 +199,33 @@ public class Main {
                     scanner.nextLine();
                     switch (searchType){
                         case "1":
+                            System.out.println("Enter the title of the book you want to search:");
                             String searchTitle = scanner.nextLine();
-                            List<Book> listByTitle = library.searchByTitle(searchTitle);
-                            if (!listByTitle.isEmpty()) {
-                                System.out.println("Books found:");
-                                for (Book bookSearchedTitle : listByTitle) {
-                                    System.out.println("Title: " + bookSearchedTitle.getTitle() + ", Author: " + bookSearchedTitle.getAuthor().getName() + ", Genre: " + bookSearchedTitle.getGenre() + "Availability: " + bookSearchedTitle.getAvailability());
+                            try {
+                                List<Book> listByTitle = library.searchByTitle(searchTitle);
+                                if (!listByTitle.isEmpty()) {
+                                    System.out.println("Books found:");
+                                    for (Book bookSearchedTitle : listByTitle) {
+                                        System.out.println("Title: " + bookSearchedTitle.getTitle() + ", Author: " + bookSearchedTitle.getAuthor().getName() + ", Genre: " + bookSearchedTitle.getGenre() + ", Availability: " + bookSearchedTitle.getAvailability());
+                                    }
                                 }
-                            } else {
-                                System.out.println("No matching books found.");
+                            } catch (BookNotFoundException e) {
+                                System.out.println("Error: " + e.getMessage());
                             }
                             break;
                         case "2":
+                            System.out.println("Author you want to search:");
                             String searchAuthor = scanner.nextLine();
-                            List<Book> listByAuthor = library.searchByAuthor(searchAuthor);
-                            if (!listByAuthor.isEmpty()) {
-                                System.out.println("Books found:");
-                                for (Book bookSearchedAuthor : listByAuthor) {
-                                    System.out.println("Title: " + bookSearchedAuthor.getTitle() + ", Author: " + bookSearchedAuthor.getAuthor().getName() + ", Genre: " + bookSearchedAuthor.getGenre() + "Availability: " + bookSearchedAuthor.getAvailability());
+                            try {
+                                List<Book> listByAuthor = library.searchByAuthor(searchAuthor);
+                                if (!listByAuthor.isEmpty()) {
+                                    System.out.println("Books found:");
+                                    for (Book bookSearchedAuthor : listByAuthor) {
+                                        System.out.println("Title: " + bookSearchedAuthor.getTitle() + ", Author: " + bookSearchedAuthor.getAuthor().getName() + ", Genre: " + bookSearchedAuthor.getGenre() + "Availability: " + bookSearchedAuthor.getAvailability());
+                                    }
                                 }
-                            } else {
-                                System.out.println("No matching books found.");
+                            }catch (BookNotFoundException e){
+                                System.out.println("Error: " + e.getMessage());
                             }
                             break;
                         case "3":
@@ -284,14 +263,16 @@ public class Main {
                                     System.out.println("Invalid genre choice. Defaulting to FICTION.");
                                     searchGenre = Genre.FICTION;
                             }
-                            List<Book> listByGenre = library.searchByGenre(searchGenre);
-                            if (!listByGenre.isEmpty()) {
-                                System.out.println("Books found:");
-                                for (Book bookSearchedGenre : listByGenre) {
-                                    System.out.println("Title: " + bookSearchedGenre.getTitle() + ", Author: " + bookSearchedGenre.getAuthor().getName() + ", Genre: " + bookSearchedGenre.getGenre() + "Availability: " + bookSearchedGenre.getAvailability());
+                            try {
+                                List<Book> listByGenre = library.searchByGenre(searchGenre);
+                                if (!listByGenre.isEmpty()) {
+                                    System.out.println("Books found:");
+                                    for (Book bookSearchedGenre : listByGenre) {
+                                        System.out.println("Title: " + bookSearchedGenre.getTitle() + ", Author: " + bookSearchedGenre.getAuthor().getName() + ", Genre: " + bookSearchedGenre.getGenre() + "Availability: " + bookSearchedGenre.getAvailability());
+                                    }
                                 }
-                            } else {
-                                System.out.println("No matching books found.");
+                            }catch (BookNotFoundException e){
+                                System.out.println("Error: " + e.getMessage());
                             }
                             break;
                         default:
