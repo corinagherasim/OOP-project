@@ -70,4 +70,8 @@ class Book {
         this.borrowDate = borrowDate;
     }
 
+    public LocalDate getBorrowDate() {
+        return borrowDate;
+    }
+
 }

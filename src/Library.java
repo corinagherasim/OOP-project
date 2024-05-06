@@ -31,6 +31,42 @@ public class Library {
         }
     }
 
+    public Reader searchReaderByName(String name) {
+        for (Reader reader : readers) {
+            if (reader.getName().equals(name)) {
+                return reader;
+            }
+        }
+        return null;
+    }
+
+    public boolean isReaderNameTaken(String name) {
+        return searchReaderByName(name) != null;
+    }
+
+    public Book getBookByNumber(int bookNumber) {
+        int count = 0;
+        for (Section section : sections.values()) {
+            for (Book book : section.getBooks()) {
+                count++;
+                if (count == bookNumber) {
+                    return book;
+                }
+            }
+        }
+        return null;
+    }
+
+    public int getTotalBooks() {
+        int count = 0;
+        for (Section section : sections.values()) {
+            for (Book book : section.getBooks()) {
+                count++;
+            }
+        }
+        return count;
+    }
+
     //Add book to library
     public void addBook(Book book) {
         Genre genre = book.getGenre(); // Get the genre of the book
@@ -99,6 +135,8 @@ public class Library {
     public void displayAllBooks() {
         System.out.println("All Books in the Library:");
 
+        int bookNumber = 1;
+
         // Iterate through each genre
         for (Genre genre : sections.keySet()) {
             Section section = sections.get(genre);
@@ -111,11 +149,25 @@ public class Library {
                 // Iterate through each book in the section
                 for (Book book : section.getBooks()) {
                     // Print book details
-                    System.out.println("Title: " + book.getTitle() + ", Author: " + book.getAuthor().getName() + ", Availability: " + book.getAvailability());
+                    System.out.print(bookNumber + ". Title: " + book.getTitle() + ", Author: " + book.getAuthor().getName() + ", Availability: " + book.getAvailability());
+
+                    // Check if the book is borrowed
+                    if (book.getAvailability() == Availability.BORROWED) {
+                        System.out.println(", Borrowed by: " + book.getBorrower().getName() + ", Borrowed Date: " + book.getBorrowDate());
+                    } else if (book.getAvailability() == Availability.RESERVED) {
+                        System.out.println(", Reserved by: " + book.getReserver().getName() + ", Reservation Date: " + book.getReservationDate());
+                    } else {
+                        System.out.println(); // Print a new line if the book is not borrowed or reserved
+                    }
+
+                    bookNumber++;
                 }
             }
         }
     }
+
+
+
 
 
 
@@ -181,6 +233,18 @@ public class Library {
         }
         return matchingBooks;
     }
+
+    public Book searchBook(String title) {
+        for (Section section : sections.values()) {
+            for (Book book : section.getBooks()) {
+                if (book.getTitle().equals(title)) {
+                    return book;
+                }
+            }
+        }
+        return null; // Returnează null dacă cartea nu este găsită
+    }
+
 
     // Check the availability of a book
     public void borrowBook(Book book, Reader borrower, LocalDate borrowDate) {

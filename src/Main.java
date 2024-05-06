@@ -1,6 +1,9 @@
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 
 // Enum representing book availability status
 enum Availability {
@@ -55,9 +58,9 @@ public class Main {
         library.addBook(book1);
         library.addBook(book8);
 
-        // Remove a book from library
-        library.removeBook(book2);
-        library.removeBook(book8);
+//        // Remove a book from library
+//        library.removeBook(book2);
+//        library.removeBook(book8);
 
 
         //Display all books from library
@@ -123,23 +126,33 @@ public class Main {
 
         Scanner scanner = new Scanner(System.in);
 
-        System.out.println("\n");
-        System.out.println("Please select one of the following commands for more information.");
-        System.out.println("1. Display all books in the library");
-        System.out.println("2. Add books to the library");
-        System.out.println("3. Remove books from the library");
-        System.out.println("4. Search books");
-        System.out.println("0.Exit");
+//        System.out.println("\n");
+//        System.out.println("Please select one of the following commands for more information.");
+//        System.out.println("1. Display all books in the library");
+//        System.out.println("2. Add books to the library");
+//        System.out.println("3. Remove books from the library");
+//        System.out.println("4. Search books");
+//        System.out.println("5. Add reader to the library");
+//        System.out.println("6. Update reader information");
+//        System.out.println("7. Reserve book");
+//        System.out.println("8. Borrow book");
+//        System.out.println("9. Return book");
+//        System.out.println("0.Exit");
 
         String option;
         do{
-//            System.out.println("\n");
-//            System.out.println("Please select one of the following commands for more information.");
-//            System.out.println("1. Display all books in the library");
-//            System.out.println("2. Add books to the library");
-//            System.out.println("3. Remove books from the library");
-//            System.out.println("4. Search books");
-//            System.out.println("0.Exit");
+            System.out.println("\n");
+            System.out.println("Please select one of the following commands for more information.");
+            System.out.println("1. Display all books in the library");
+            System.out.println("2. Add books to the library");
+            System.out.println("3. Remove books from the library");
+            System.out.println("4. Search books");
+            System.out.println("5. Add reader to the library");
+            System.out.println("6. Update reader information");
+            System.out.println("7. Reserve book");
+            System.out.println("8. Borrow book");
+            System.out.println("9. Return book");
+            System.out.println("0.Exit");
 
             option = scanner.next();
             scanner.nextLine();
@@ -285,6 +298,121 @@ public class Main {
                             System.out.println("Invalid option");
                     }
                     break;
+
+                case "5":
+                    do {
+                        System.out.print("Enter name: ");
+                        String name = scanner.nextLine();
+
+                        if (library.isReaderNameTaken(name)) {
+                            System.out.println("Name already exists. Please choose another name.");
+                        } else {
+                            Reader reader = new Reader(name);
+                            library.addReader(reader);
+                            System.out.println("Reader '" + name + "' added to the library.");
+                            break;
+                        }
+                    } while (true);
+                    break;
+
+                case "6":
+                    do {
+                        System.out.print("Enter name: ");
+                        String name = scanner.nextLine();
+
+                        if (!library.isReaderNameTaken(name)) {
+                            System.out.println("Name does not exist. Please enter a valid name.");
+                        } else {
+                            System.out.print("Enter new name: ");
+                            String newName = scanner.nextLine();
+
+                            library.updateReaderInformation(library.searchReaderByName(name), newName);
+                            System.out.println("Reader information updated successfully.");
+                            break;
+                        }
+                    } while (true);
+                    break;
+
+                case "7":
+                    String nameReserve;
+                    Reader reader;
+                    do {
+                        System.out.print("Enter name: ");
+                        nameReserve = scanner.nextLine();
+                        reader = library.searchReaderByName(nameReserve);
+                        if (reader == null) {
+                            System.out.println("Invalid name. Please enter a valid name.");
+                        }
+                    } while (reader == null);
+
+                    // Display only available books for reservation
+                    library.displayAllBooks();
+
+                    // Get the total number of available books
+                    int totalBooks = library.getTotalBooks();
+
+                    // Prompt the user to select a book by its number
+                    System.out.print("Enter the number of the book you want to reserve: ");
+                    int bookNumber = Integer.parseInt(scanner.nextLine());
+
+                    // Validate the book number
+                    if (bookNumber < 1 || bookNumber > totalBooks) {
+                        System.out.println("Invalid book number. Please enter a valid number.");
+                    } else {
+                        // Get the selected book
+                        Book selectedBook = library.getBookByNumber(bookNumber);
+
+                        // Prompt the user to enter the reservation date
+                        System.out.print("Enter the date of the reservation (YYYY-MM-DD): ");
+                        String dateReserve = scanner.nextLine();
+
+                        // Reserve the selected book
+                        library.reserveBook(selectedBook, reader, LocalDate.parse(dateReserve));
+                    }
+                    break;
+
+                case "8":
+                    String nameBorrower;
+                    Reader borrower;
+                    do {
+                        System.out.print("Enter name: ");
+                        nameBorrower = scanner.nextLine();
+                        borrower = library.searchReaderByName(nameBorrower);
+                        if (borrower == null) {
+                            System.out.println("Invalid name. Please enter a valid name.");
+                        }
+                    } while (borrower == null);
+
+                    // Display only available books for reservation
+                    library.displayAllBooks();
+
+                    // Get the total number of available books
+                    int totalB = library.getTotalBooks();
+
+                    // Prompt the user to select a book by its number
+                    System.out.print("Enter the number of the book you want to borrow: ");
+                    int bookNr = Integer.parseInt(scanner.nextLine());
+
+                    // Validate the book number
+                    if (bookNr < 1 || bookNr > totalB) {
+                        System.out.println("Invalid book number. Please enter a valid number.");
+                    } else {
+                        // Get the selected book
+                        Book selectedBook = library.getBookByNumber(bookNr);
+
+                        // Prompt the user to enter the reservation date
+                        System.out.print("Enter the date of the reservation (YYYY-MM-DD): ");
+                        String dateReserve = scanner.nextLine();
+
+                        // Reserve the selected book
+                        library.borrowBook(selectedBook, borrower, LocalDate.parse(dateReserve));
+                    }
+                    break;
+
+                case "9":
+                    // return
+                    break;
+
                 default:
                     System.out.println("Invalid option");
             }
