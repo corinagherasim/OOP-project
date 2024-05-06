@@ -38,6 +38,7 @@ public class Main {
         Reader reader1 = new Reader("Popescu Claudia");
         Reader reader2 = new Reader("Georgescu George");
 
+
         // Create library
         Library library = new Library();
 
@@ -68,6 +69,32 @@ public class Main {
 
         LocalDate borrowDate = LocalDate.parse("2024-04-26");
         library.borrowBook(book4, reader1, borrowDate);
+
+        try {
+            List<Book> matchingBooksTitle = reader1.searchByTitle("Tdbjh");
+            // Display the matching books
+            if (!matchingBooksTitle.isEmpty()) {
+                System.out.println("The reader borrowed this books:");
+                for (Book book : matchingBooksTitle) {
+                    System.out.println("Title: " + book.getTitle() + ", Author: " + book.getAuthor().getName());
+                }
+            }
+        }catch (BookNotFoundException e){
+            System.out.println("Error: " + e.getMessage());
+        }
+
+        try {
+            List<Book> matchingBooksAuthor = reader1.searchByAuthor("F. Scott Fitzgerald");
+            // Display the matching books
+            if (!matchingBooksAuthor.isEmpty()) {
+                System.out.println("The reader borrowed this books:");
+                for (Book book : matchingBooksAuthor) {
+                    System.out.println("Title: " + book.getTitle() + ", Author: " + book.getAuthor().getName());
+                }
+            }
+        }catch (BookNotFoundException e){
+            System.out.println("Error: " + e.getMessage());
+        }
 
         library.checkAvailability(book4);
 

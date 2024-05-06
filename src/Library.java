@@ -6,7 +6,7 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
 // Main Library class representing the library system
-public class Library {
+public class Library implements Searchable{
     private Map<Genre, Section> sections; // Map of section name to Section object
     private List<Book> books; // List of all books in the library
     private Map<Book, LocalDate> borrowedBooks;
@@ -203,6 +203,7 @@ public class Library {
         }
     }
 
+    @Override
     // Search by book genre, title or author
     public List<Book> searchByAuthor(String authorName) throws BookNotFoundException{
         List<Book> matchingBooks = new ArrayList<>();
@@ -229,6 +230,7 @@ public class Library {
         return matchingBooks;
     }
 
+    @Override
     public List<Book> searchByTitle(String title) throws BookNotFoundException {
         List<Book> matchingBooks = new ArrayList<>();
         for (Book book : books) {
