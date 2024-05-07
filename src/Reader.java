@@ -23,6 +23,10 @@ class Reader extends Person implements Searchable {
         this.name = name;
     }
 
+    public void returnBook(Book book) {
+        borrowedBooks.remove(book);
+    }
+
     @Override
     public List<Book> searchByTitle(String title) throws BookNotFoundException{
         List<Book> matchingBooks = new ArrayList<>();

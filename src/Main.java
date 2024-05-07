@@ -420,10 +420,92 @@ public class Main {
                     break;
 
                 case "9":
-                    System.out.print("Enter the title of the book you want to return: ");
-                    String title = scanner.nextLine();
+                    boolean validName = false;
+                    String name;
 
-                    library.returnBook(library.searchBook(title));
+                    do {
+                        System.out.print("Enter name: ");
+                        name = scanner.nextLine();
+                        borrower = library.searchReaderByName(name);
+                        if (borrower != null) {
+                            validName = true;
+                        } else {
+                            System.out.println("Invalid name. Please enter a valid name.");
+                        }
+                    } while (!validName);
+
+                    int choice;
+                    do {
+                        System.out.print("1. Search book by title\n2. Search book by author\nChoose an option: ");
+                        try {
+                            choice = Integer.parseInt(scanner.nextLine());
+                            if (choice != 1 && choice != 2) {
+                                System.out.println("Invalid choice. Please enter 1 or 2.");
+                            } else {
+                                break;
+                            }
+                        } catch (NumberFormatException e) {
+                            System.out.println("Invalid choice. Please enter a number.");
+                        }
+                    } while (true);
+
+                    if (choice == 1) {
+                        System.out.print("Enter the title of the book: ");
+                        String title = scanner.nextLine();
+                        try {
+                            List<Book> matchingBooksTitle = borrower.searchByTitle(title);
+                            if (!matchingBooksTitle.isEmpty()) {
+                                System.out.println("The reader borrowed these books:");
+                                for (Book bk : matchingBooksTitle) {
+                                    System.out.println("Title: " + bk.getTitle() + ", Author: " + bk.getAuthor().getName());
+                                }
+                            } else {
+                                System.out.println("No books with the title '" + title + "' found.");
+                            }
+                        } catch (BookNotFoundException e) {
+                            System.out.println("Error: " + e.getMessage());
+                        }
+                    } else {
+                        System.out.print("Enter the author of the book: ");
+                        String author = scanner.nextLine();
+                        try {
+                            List<Book> matchingBooksAuthor = borrower.searchByAuthor(author);
+                            if (!matchingBooksAuthor.isEmpty()) {
+                                System.out.println("The reader borrowed these books:");
+                                for (Book bk : matchingBooksAuthor) {
+                                    System.out.println("Title: " + bk.getTitle() + ", Author: " + bk.getAuthor().getName());
+                                }
+                            } else {
+                                System.out.println("No books with the author '" + author + "' found.");
+                            }
+                        } catch (BookNotFoundException e) {
+                            System.out.println("Error: " + e.getMessage());
+                        }
+                    }
+
+                    System.out.print("Do you want to return a book? (y/n): ");
+                    String response = scanner.nextLine().toLowerCase();
+
+                    while (!response.equals("y") && !response.equals("n")) {
+                        System.out.print("Invalid option. Please enter 'y' or 'n': ");
+                        response = scanner.nextLine().toLowerCase();
+                    }
+
+                    if (response.equals("y")) {
+                        System.out.print("Enter the title of the book you want to return: ");
+                        String title = scanner.nextLine();
+
+                        Book bookToReturn = library.searchBook(title);
+
+                        if (bookToReturn != null) {
+                            library.returnBook(bookToReturn);
+                        } else {
+                            System.out.println("Book not found.");
+                        }
+                    } else {
+                        System.out.println("No books were returned.");
+                    }
+
                     break;
 
                 case "10":

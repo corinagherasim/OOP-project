@@ -360,13 +360,22 @@ public class Library implements Searchable{
             book.setAvailability(Availability.AVAILABLE);
 
             // Remove the association with the borrower
-            book.setBorrower(null);
+            Reader borrower = book.getBorrower();
+            if (borrower != null) {
+                borrower.returnBook(book);
+            } else {
+                System.out.println("Error: The book has no associated borrower.");
+            }
+
+            // Remove the book from the library's borrowed books map
+            borrowedBooks.remove(book);
 
             System.out.println("Book '" + book.getTitle() + "' has been returned.");
         } else {
             System.out.println("This book is not borrowed and cannot be returned.");
         }
     }
+
 
     // Reserve a book
     public void reserveBook(Book book, Reader reader, LocalDate reserveDate) {
