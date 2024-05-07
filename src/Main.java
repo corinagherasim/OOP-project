@@ -67,7 +67,7 @@ public class Main {
         //Display all books from library
         library.displayAllBooks();
 
-        LocalDate borrowDate = LocalDate.parse("2024-04-26");
+        LocalDate borrowDate = LocalDate.parse("2024-03-26");
         library.borrowBook(book4, reader1, borrowDate);
 
         try {
@@ -133,6 +133,7 @@ public class Main {
 //        System.out.println("7. Reserve book");
 //        System.out.println("8. Borrow book");
 //        System.out.println("9. Return book");
+//        System.out.println("10. Generate overdue report");
 //        System.out.println("0.Exit");
 
         String option;
@@ -148,6 +149,7 @@ public class Main {
             System.out.println("7. Reserve book");
             System.out.println("8. Borrow book");
             System.out.println("9. Return book");
+            System.out.println("10. Generate overdue report");
             System.out.println("0.Exit");
 
             option = scanner.next();
@@ -418,7 +420,14 @@ public class Main {
                     break;
 
                 case "9":
-                    // return
+                    System.out.print("Enter the title of the book you want to return: ");
+                    String title = scanner.nextLine();
+
+                    library.returnBook(library.searchBook(title));
+                    break;
+
+                case "10":
+                    library.generateOverdueReport();
                     break;
 
                 default:

@@ -1,13 +1,6 @@
-// Author class represents authors of books
-class Author {
-    private String name;
-
+// Author class represents authors of books and extends Person
+class Author extends Person {
     public Author(String name) {
-        this.name = name;
-    }
-
-    // Get the name of the author
-    public String getName() {
-        return name;
+        super(name);
     }
 }

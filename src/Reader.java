@@ -1,13 +1,12 @@
 import java.util.ArrayList;
 import java.util.List;
 
-// Reader class represents the people who read books
-class Reader implements Searchable{
-    private String name;
+// Reader class represents the people who read books and extends Person
+class Reader extends Person implements Searchable {
     private List<Book> borrowedBooks;
 
     public Reader(String name) {
-        this.name = name;
+        super(name);
         this.borrowedBooks = new ArrayList<>();
     }
 
