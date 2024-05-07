@@ -170,6 +170,36 @@ public class Library implements Searchable{
         }
     }
 
+    public void generateOverdueReport() {
+
+        int borrowed = 0;
+        System.out.println("Overdue Report:");
+
+        // Iterate through each genre
+        for (Genre genre : sections.keySet()) {
+            Section section = sections.get(genre);
+
+            // Check if the section is empty
+            if (!section.getBooks().isEmpty()) {
+                for (Book book : section.getBooks()) {
+                    // Check if the book is borrowed
+                    if (book.getAvailability() == Availability.BORROWED && LocalDate.now().isAfter(book.getBorrowDate().plusDays(30))) {
+                        borrowed = 1;
+                        LocalDate borrowDate = book.getBorrowDate();
+                        long daysDifference = Math.abs(LocalDate.now().until(borrowDate, ChronoUnit.DAYS)) - 30;
+                        System.out.println("Title: " + book.getTitle() + ", Author: " + book.getAuthor().getName() + ", Borrowed by: " + book.getBorrower().getName() + ", Borrowed Date: " + book.getBorrowDate() + ", Days Overdue: " + daysDifference);
+                    }
+                }
+            }
+        }
+        if(borrowed == 0)
+        {
+            System.out.println("No overdue books found.");
+        }
+    }
+
+
+
     //Displays all the details about a book
     public void viewBookDetails(String title) {
         boolean found = false;
@@ -287,35 +317,6 @@ public class Library implements Searchable{
             System.out.println("Book '" + book.getTitle() + "' is not available for borrowing by " + borrower.getName() + ".");
         }
     }
-
-
-
-    public void generateOverdueReport() {
-        LocalDate currentDate = LocalDate.now();
-        System.out.println("Overdue Books Report:");
-
-        for (Section section : sections.values()) {
-            for (Book book : section.getBooks()) {
-                if (book.getAvailability() == Availability.BORROWED) {
-                    Reader borrower = book.getBorrower();
-                    LocalDate borrowDate = borrowedBooks.get(book);
-                    if (borrowDate != null && borrower != null) {
-                        if (currentDate.isAfter(borrowDate.plusDays(30))) {
-                            long daysOverdue = java.time.temporal.ChronoUnit.DAYS.between(borrowDate, currentDate);
-                            System.out.println("Book: " + book.getTitle() + " (Borrower: " + borrower.getName() + ", Due Date: " + borrowDate.plusDays(30) + ", Days Overdue: " + daysOverdue + ")");
-                        } else {
-                            System.out.println("Book: " + book.getTitle() + " is not overdue.");
-                        }
-                    } else {
-                        System.out.println("Book: " + book.getTitle() + " is missing borrower or borrow date.");
-                    }
-                } else {
-                    System.out.println("Book: " + book.getTitle() + " is not borrowed.");
-                }
-            }
-        }
-    }
-
 
 
 

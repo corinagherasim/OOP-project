@@ -67,7 +67,7 @@ public class Main {
         //Display all books from library
         library.displayAllBooks();
 
-        LocalDate borrowDate = LocalDate.parse("2024-03-26");
+        LocalDate borrowDate = LocalDate.parse("2024-01-26");
         library.borrowBook(book4, reader1, borrowDate);
 
         try {
@@ -518,13 +518,3 @@ public class Main {
         }while(!option.equals("0"));
     }
 }
-
-
-
-
-
-
-
-
-
-
