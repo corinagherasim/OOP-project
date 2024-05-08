@@ -70,6 +70,9 @@ public class Main {
         LocalDate borrowDate = LocalDate.parse("2024-01-26");
         library.borrowBook(book4, reader1, borrowDate);
 
+        library.borrowBook(book2, reader2, LocalDate.parse("2024-02-26"));
+        library.reserveBook(book3, reader2, LocalDate.parse("2024-03-26"));
+
         try {
             List<Book> matchingBooksTitle = reader1.searchByTitle("Tdbjh");
             // Display the matching books
@@ -115,7 +118,7 @@ public class Main {
 
         library.checkAvailability(book4);
 
-        library.generateOverdueReport();
+//        library.generateOverdueReport();
 
         //Display all the details about a book from the library
         library.viewBookDetails("Harry Potter and the Philosopher's Stone");
@@ -150,6 +153,7 @@ public class Main {
             System.out.println("8. Borrow book");
             System.out.println("9. Return book");
             System.out.println("10. Generate overdue report");
+            System.out.println("11. Reset availability for overdue reservations");
             System.out.println("0.Exit");
 
             option = scanner.next();
@@ -509,7 +513,16 @@ public class Main {
                     break;
 
                 case "10":
-                    library.generateOverdueReport();
+//                    library.generateOverdueReport();
+                    ReportBorrow overdueBorrow = new ReportBorrow(library.getSections());
+                    overdueBorrow.generateReport();
+
+                    break;
+
+                case "11":
+                    ReportReserve overdueReserve = new ReportReserve(library.getSections());
+                    overdueReserve.generateReport();
+
                     break;
 
                 default:

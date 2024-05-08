@@ -19,6 +19,10 @@ public class Library implements Searchable{
         this.borrowedBooks = new HashMap<>();
     }
 
+    public Map<Genre, Section> getSections() {
+        return sections;
+    }
+
     //Add reader to library
     public void addReader(Reader reader) {
         readers.add(reader);
@@ -170,33 +174,33 @@ public class Library implements Searchable{
         }
     }
 
-    public void generateOverdueReport() {
-
-        int borrowed = 0;
-        System.out.println("Overdue Report:");
-
-        // Iterate through each genre
-        for (Genre genre : sections.keySet()) {
-            Section section = sections.get(genre);
-
-            // Check if the section is empty
-            if (!section.getBooks().isEmpty()) {
-                for (Book book : section.getBooks()) {
-                    // Check if the book is borrowed
-                    if (book.getAvailability() == Availability.BORROWED && LocalDate.now().isAfter(book.getBorrowDate().plusDays(30))) {
-                        borrowed = 1;
-                        LocalDate borrowDate = book.getBorrowDate();
-                        long daysDifference = Math.abs(LocalDate.now().until(borrowDate, ChronoUnit.DAYS)) - 30;
-                        System.out.println("Title: " + book.getTitle() + ", Author: " + book.getAuthor().getName() + ", Borrowed by: " + book.getBorrower().getName() + ", Borrowed Date: " + book.getBorrowDate() + ", Days Overdue: " + daysDifference);
-                    }
-                }
-            }
-        }
-        if(borrowed == 0)
-        {
-            System.out.println("No overdue books found.");
-        }
-    }
+//    public void generateOverdueReport() {
+//
+//        int borrowed = 0;
+//        System.out.println("Overdue Report:");
+//
+//        // Iterate through each genre
+//        for (Genre genre : sections.keySet()) {
+//            Section section = sections.get(genre);
+//
+//            // Check if the section is empty
+//            if (!section.getBooks().isEmpty()) {
+//                for (Book book : section.getBooks()) {
+//                    // Check if the book is borrowed
+//                    if (book.getAvailability() == Availability.BORROWED && LocalDate.now().isAfter(book.getBorrowDate().plusDays(30))) {
+//                        borrowed = 1;
+//                        LocalDate borrowDate = book.getBorrowDate();
+//                        long daysDifference = Math.abs(LocalDate.now().until(borrowDate, ChronoUnit.DAYS)) - 30;
+//                        System.out.println("Title: " + book.getTitle() + ", Author: " + book.getAuthor().getName() + ", Borrowed by: " + book.getBorrower().getName() + ", Borrowed Date: " + book.getBorrowDate() + ", Days Overdue: " + daysDifference);
+//                    }
+//                }
+//            }
+//        }
+//        if(borrowed == 0)
+//        {
+//            System.out.println("No overdue books found.");
+//        }
+//    }
 
 
 
