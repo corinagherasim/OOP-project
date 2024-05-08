@@ -28,7 +28,7 @@ class Reader extends Person implements Searchable {
     }
 
     @Override
-    public List<Book> searchByTitle(String title) throws BookNotFoundException{
+    public List<Book> searchByTitle(String title) throws BookNotFoundException {
         List<Book> matchingBooks = new ArrayList<>();
         for (Book book : borrowedBooks) {
             if (book.getTitle().equalsIgnoreCase(title)) {
@@ -43,7 +43,7 @@ class Reader extends Person implements Searchable {
 
     // Search for books by author in the list of borrowed books
     @Override
-    public List<Book> searchByAuthor(String authorName) throws BookNotFoundException{
+    public List<Book> searchByAuthor(String authorName) throws BookNotFoundException {
         List<Book> matchingBooks = new ArrayList<>();
         for (Book book : borrowedBooks) {
             if (book.getAuthor().getName().equalsIgnoreCase(authorName)) {

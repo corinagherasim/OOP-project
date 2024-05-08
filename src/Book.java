@@ -30,13 +30,17 @@ class Book {
         return author;
     }
 
-    public Genre getGenre() {return genre;}
+    public Genre getGenre() {
+        return genre;
+    }
 
     public Reader getReserver() {
         return reserver;
     }
 
-    public void setGenre(Genre genre) {this.genre = genre;}
+    public void setGenre(Genre genre) {
+        this.genre = genre;
+    }
 
     public void setAvailability(Availability availability) {
         this.availability = availability;
@@ -50,7 +54,9 @@ class Book {
         this.borrower = borrower;
     }
 
-    public void setReserver(Reader reserver) { this.reserver = reserver; }
+    public void setReserver(Reader reserver) {
+        this.reserver = reserver;
+    }
 
     public Reader getBorrower() {
         return borrower;

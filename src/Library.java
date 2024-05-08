@@ -6,7 +6,7 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
 // Main Library class representing the library system
-public class Library implements Searchable{
+public class Library implements Searchable {
     private Map<Genre, Section> sections; // Map of section name to Section object
     private List<Book> books; // List of all books in the library
     private Map<Book, LocalDate> borrowedBooks;
@@ -111,33 +111,33 @@ public class Library implements Searchable{
         }
     }
 
-        public void removeBookByTitle(String title) throws BookNotFoundException{
-            // To later check if the book has been found
-            boolean bookRemoved = false;
-            // Iterate over the list of books in the library
-            for (Book book : books) {
-                // Check if the current book's title matches the specified title
-                if (book.getTitle().equals(title)) {
-                    // Remove the book from the list of books
-                    books.remove(book);
-                    // Remove the book from its section (if sections are being used)
-                    for (Section section : sections.values()) {
-                        if (section.getBooks().contains(book)) {
-                            section.getBooks().remove(book);
-                            break;
-                        }
+    public void removeBookByTitle(String title) throws BookNotFoundException {
+        // To later check if the book has been found
+        boolean bookRemoved = false;
+        // Iterate over the list of books in the library
+        for (Book book : books) {
+            // Check if the current book's title matches the specified title
+            if (book.getTitle().equals(title)) {
+                // Remove the book from the list of books
+                books.remove(book);
+                // Remove the book from its section (if sections are being used)
+                for (Section section : sections.values()) {
+                    if (section.getBooks().contains(book)) {
+                        section.getBooks().remove(book);
+                        break;
                     }
-
-                    System.out.println("Book '" + title + "' has been removed from the library.");
-                    bookRemoved = true;
-                    break;
                 }
-            }
 
-            if (!bookRemoved){
-                throw new BookNotFoundException("Book with title '" + title + "' not found in the library.");
+                System.out.println("Book '" + title + "' has been removed from the library.");
+                bookRemoved = true;
+                break;
             }
         }
+
+        if (!bookRemoved) {
+            throw new BookNotFoundException("Book with title '" + title + "' not found in the library.");
+        }
+    }
 
     //Displays all books from a library
     public void displayAllBooks() {
@@ -203,7 +203,6 @@ public class Library implements Searchable{
 //    }
 
 
-
     //Displays all the details about a book
     public void viewBookDetails(String title) {
         boolean found = false;
@@ -239,7 +238,7 @@ public class Library implements Searchable{
 
     @Override
     // Search by book genre, title or author
-    public List<Book> searchByAuthor(String authorName) throws BookNotFoundException{
+    public List<Book> searchByAuthor(String authorName) throws BookNotFoundException {
         List<Book> matchingBooks = new ArrayList<>();
         for (Book book : books) {
             if (book.getAuthor().getName().equalsIgnoreCase(authorName)) {
@@ -252,7 +251,7 @@ public class Library implements Searchable{
         return matchingBooks;
     }
 
-    public List<Book> searchByGenre(Genre genre) throws BookNotFoundException{
+    public List<Book> searchByGenre(Genre genre) throws BookNotFoundException {
         List<Book> matchingBooks = new ArrayList<>();
         Section section = sections.get(genre);
         if (section != null) {
@@ -323,7 +322,6 @@ public class Library implements Searchable{
     }
 
 
-
     public void checkAvailability(Book book) {
         boolean found = false;
         for (Section section : sections.values()) {
@@ -354,7 +352,6 @@ public class Library implements Searchable{
             System.out.println("Book not found in the library.");
         }
     }
-
 
 
     // Return a book
@@ -403,7 +400,6 @@ public class Library implements Searchable{
             System.out.println("Sorry, the book '" + book.getTitle() + "' is not available for reservation.");
         }
     }
-
 
 
     public void updateReaderInformation(Reader reader, String newName) {
