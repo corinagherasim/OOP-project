@@ -1,3 +1,4 @@
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,6 +27,17 @@ public class Library implements Searchable {
     //Add reader to library
     public void addReader(Reader reader) {
         readers.add(reader);
+    }
+    public void addReaderToCSV(Reader reader) {
+        readers.add(reader);
+        String csvFile = "C:\\Users\\Corina\\IdeaProjects\\OOP-project\\resources\\reader.csv";
+        try (PrintWriter writer = new PrintWriter(new FileWriter(csvFile, true))) {
+            writer.println(reader.getName());
+            System.out.println("Reader added to the CSV file.");
+        } catch (IOException e) {
+            System.err.println("Error writing to CSV file: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     public void displayAllReaders() {
@@ -74,40 +86,34 @@ public class Library implements Searchable {
     //Add book to library
     public void addBook(Book book) {
         Genre genre = book.getGenre(); // Get the genre of the book
-        // Check if the book already exists in the library
-        if (!books.contains(book)) {
-            // Add the book to the list of all books
-            books.add(book);
-
-            // Find or create the appropriate section for the book
-            Section section = sections.getOrDefault(genre, new Section());
-            section.addBook(book);
-            sections.put(genre, section);
-
-            System.out.println("Book '" + book.getTitle() + "' added to the library.");
-        } else {
-            System.out.println("Book '" + book.getTitle() + "' already exists in the library.");
-        }
+        // Add the book to the list of all books
+        books.add(book);
+        // Find or create the appropriate section for the book
+        Section section = sections.getOrDefault(genre, new Section());
+        section.addBook(book);
+        sections.put(genre, section);
     }
 
-    // Remove a book from the library (also the author if he doesn't have any other books in the library)
-    public void removeBook(Book book) {
-        if (books.contains(book)) {
-            // Remove the book from the list of all books
-            books.remove(book);
-            // Remove the book from its section
-            Genre bookGenre = book.getGenre();
-            Section section = sections.get(bookGenre);
-            if (section != null && section.getBooks().contains(book)) {
-                section.getBooks().remove(book);
-                System.out.println("Book '" + book.getTitle() + "' removed from section '" + bookGenre + "'.");
-            } else {
-                System.out.println("Book '" + book.getTitle() + "' not found in its section.");
-            }
+    public void addBookMenu(Book book) {
+        Genre genre = book.getGenre(); // Get the genre of the book
+        // Add the book to the list of all books
+        books.add(book);
+        // Find or create the appropriate section for the book
+        Section section = sections.getOrDefault(genre, new Section());
+        section.addBook(book);
+        sections.put(genre, section);
+        addBookToCSV(book);
+        System.out.println("Book '" + book.getTitle() + "' added to the library.");
+    }
 
-            System.out.println("Book '" + book.getTitle() + "' removed from the library.");
-        } else {
-            System.out.println("Book not found in the library.");
+    private void addBookToCSV(Book book) {
+        String csvFile = "C:\\Users\\Corina\\IdeaProjects\\OOP-project\\resources\\book.csv";
+        try (PrintWriter writer = new PrintWriter(new FileWriter(csvFile, true))) {
+            writer.println(book.getTitle() + "," + book.getAuthor().getName() + "," + book.getGenre());
+            System.out.println("Book '" + book.getTitle() + "' added to the CSV file.");
+        } catch (IOException e) {
+            System.err.println("Error writing to CSV file: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -136,6 +142,36 @@ public class Library implements Searchable {
 
         if (!bookRemoved) {
             throw new BookNotFoundException("Book with title '" + title + "' not found in the library.");
+        }
+
+        removeBookFromCSV(title);
+    }
+
+    private void removeBookFromCSV(String title) {
+        String filePath = "C:\\Users\\Corina\\IdeaProjects\\OOP-project\\resources\\book.csv";
+        List<String> updatedLines = new ArrayList<>();
+
+        // Rewrite the CSV file excluding the removed book
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                String bookTitle = parts[0].trim();
+                if (!bookTitle.equals(title)) {
+                    updatedLines.add(line);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+            for (String line : updatedLines) {
+                writer.write(line);
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -406,10 +442,37 @@ public class Library implements Searchable {
         // Check if the reader exists in the library's list of readers
         if (readers.contains(reader)) {
             // Update the reader's information
+            updateReaderInformationToCSV(reader.getName(),newName);
             reader.setName(newName);
             System.out.println("Reader information updated successfully.");
         } else {
             System.out.println("Reader not found in the library.");
+        }
+    }
+
+    private void updateReaderInformationToCSV(String oldName, String newName) {
+        List<String> lines = new ArrayList<>();
+        // Read the existing contents of the CSV file and update the relevant line
+        try (BufferedReader fileReader = new BufferedReader(new FileReader("C:\\Users\\Corina\\IdeaProjects\\OOP-project\\resources\\reader.csv"))) {
+            String line;
+            while ((line = fileReader.readLine()) != null) {
+                if (line.equals(oldName)) {
+                    line = newName;
+                    System.out.println("works.");
+                }
+                lines.add(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        // Write the updated contents back to the CSV file
+        try (BufferedWriter fileWriter = new BufferedWriter(new FileWriter("C:\\Users\\Corina\\IdeaProjects\\OOP-project\\resources\\reader.csv"))) {
+            for (String line : lines) {
+                fileWriter.write(line);
+                fileWriter.newLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

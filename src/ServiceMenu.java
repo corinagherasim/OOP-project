@@ -1,4 +1,6 @@
+import java.io.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -105,7 +107,7 @@ public class ServiceMenu {
                     }
 
                     Book book = new Book(bookTitle, new Author(bookAuthor), bookGenre);
-                    library.addBook(book);
+                    library.addBookMenu(book);
                     break;
                 case "3":
                     try {
@@ -216,7 +218,7 @@ public class ServiceMenu {
                             System.out.println("Name already exists. Please choose another name.");
                         } else {
                             Reader reader = new Reader(name);
-                            library.addReader(reader);
+                            library.addReaderToCSV(reader);
                             System.out.println("Reader '" + name + "' added to the library.");
                             break;
                         }
@@ -235,7 +237,6 @@ public class ServiceMenu {
                             String newName = scanner.nextLine();
 
                             library.updateReaderInformation(library.searchReaderByName(name), newName);
-                            System.out.println("Reader information updated successfully.");
                             break;
                         }
                     } while (true);
@@ -444,27 +445,91 @@ public class ServiceMenu {
         // Create library
         Library library = new Library();
 
-        // Add the readers to the library
-        library.addReader(reader1);
-        library.addReader(reader2);
-
         library.displayAllReaders();
+//    reading books from csv
+        String filePathBook = "C:\\Users\\Corina\\IdeaProjects\\OOP-project\\resources\\book.csv";
 
-        // Update the name of the reader
-        library.updateReaderInformation(reader1, "Ionescu Claudiu");
+        // Create a list to store Book objects
+        List<Book> books = new ArrayList<>();
 
-        library.displayAllReaders();
+        try {
+            // Open the CSV file
+            Scanner scanner = new Scanner(new File(filePathBook));
+            scanner.nextLine(); // Skip the header line
 
-        // Add book to library
-        library.addBook(book1);
-        library.addBook(book2);
-        library.addBook(book3);
-        library.addBook(book4);
-        library.addBook(book5);
-        library.addBook(book6);
-        library.addBook(book7);
-        library.addBook(book8);
-        library.addBook(book9);
+            // Read each line of the file
+            while (scanner.hasNextLine()) {
+                // Split the line into tokens based on comma
+                String[] tokens = scanner.nextLine().split(",");
+
+                // Extract information from the tokens
+                String title = tokens[0].trim();
+                String authorName = tokens[1].trim();
+                Genre genre = Genre.valueOf(tokens[2].trim()); // Convert the string to Genre enum
+
+                // Create Book and Author objects
+                Author author = new Author(authorName);
+                Book book = new Book(title, author, genre);
+
+                // Add the Book to the list
+                books.add(book);
+            }
+            scanner.close();
+
+            // Now you have a list of Book objects ready to be added to the library
+            // Assuming you have a Library object named 'library'
+            for (Book book : books) {
+                library.addBook(book);
+            }
+            // Print a message to indicate successful addition
+            System.out.println("Books added to the library successfully!");
+        } catch (FileNotFoundException e) {
+            System.err.println("File not found: " + filePathBook);
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.err.println("An error occurred while reading the CSV file.");
+            e.printStackTrace();
+        }
+
+//        reading readers from csv
+        String filePathReader = "C:\\Users\\Corina\\IdeaProjects\\OOP-project\\resources\\reader.csv";
+
+        // Create a list to store Reader objects
+        List<Reader> readers = new ArrayList<>();
+
+        try {
+            // Open the CSV file
+            Scanner scanner = new Scanner(new File(filePathReader));
+            scanner.nextLine(); // Skip the header line
+
+            // Read each line of the file
+            while (scanner.hasNextLine()) {
+                // Extract name from the line
+                String name = scanner.nextLine().trim();
+
+                // Create Reader object
+                Reader reader = new Reader(name);
+
+                // Add the Reader to the list
+                readers.add(reader);
+            }
+            scanner.close();
+
+            // Now you have a list of Reader objects ready to be added to the library
+            // Assuming you have a Library object named 'library'
+            for (Reader reader : readers) {
+                library.addReader(reader);
+            }
+
+            // Print a message to indicate successful addition
+            System.out.println("Readers added to the library successfully!");
+        } catch (FileNotFoundException e) {
+            System.err.println("File not found: " + filePathReader);
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.err.println("An error occurred while reading the CSV file.");
+            e.printStackTrace();
+        }
 
         LocalDate borrowDate = LocalDate.parse("2024-01-26");
         library.borrowBook(book4, reader1, borrowDate);
