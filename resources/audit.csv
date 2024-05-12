@@ -1,0 +1,9 @@
+action, timestamp
+Display all books,2024-05-12T17:04:38
+Display all books,2024-05-12 17:05:35
+Search book by title,2024-05-12 17:11:16
+Search book by genre,2024-05-12 17:11:16
+Add reader,2024-05-12 17:12:43
+Update reader information,2024-05-12 17:13:28
+Generate overdue report,2024-05-12 17:13:35
+Reset availability for overdue reservations,2024-05-12 17:13:39

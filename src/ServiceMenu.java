@@ -1,9 +1,11 @@
 import java.io.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-
+import java.time.Instant;
 public class ServiceMenu {
 
 //    Singleton
@@ -60,6 +62,7 @@ public class ServiceMenu {
                     break;
                 case "1":
                     library.displayAllBooks();
+                    addActionToCSV("Display all books");
                     break;
                 case "2":
                     String bookTitle;
@@ -108,6 +111,7 @@ public class ServiceMenu {
 
                     Book book = new Book(bookTitle, new Author(bookAuthor), bookGenre);
                     library.addBookMenu(book);
+                    addActionToCSV("Add book");
                     break;
                 case "3":
                     try {
@@ -127,6 +131,7 @@ public class ServiceMenu {
                             library.removeAuthorFromCSV(author);
                         }
                     }
+                    addActionToCSV("Remove book");
                     break;
                 case "4":
                     System.out.println("Search the book by:");
@@ -151,6 +156,7 @@ public class ServiceMenu {
                             } catch (BookNotFoundException e) {
                                 System.out.println("Error: " + e.getMessage());
                             }
+                            addActionToCSV("Search book by title");
                             break;
                         case "2":
                             library.displayAllAuthors();
@@ -167,6 +173,7 @@ public class ServiceMenu {
                             } catch (BookNotFoundException e) {
                                 System.out.println("Error: " + e.getMessage());
                             }
+                            addActionToCSV("Search book by author");
                             break;
                         case "3":
                             System.out.println("Select book genre:");
@@ -218,6 +225,7 @@ public class ServiceMenu {
                         default:
                             System.out.println("Invalid option");
                     }
+                    addActionToCSV("Search book by genre");
                     break;
 
                 case "5":
@@ -234,6 +242,7 @@ public class ServiceMenu {
                             break;
                         }
                     } while (true);
+                    addActionToCSV("Add reader");
                     break;
 
                 case "6":
@@ -251,6 +260,7 @@ public class ServiceMenu {
                             break;
                         }
                     } while (true);
+                    addActionToCSV("Update reader information");
                     break;
 
                 case "7":
@@ -289,6 +299,7 @@ public class ServiceMenu {
                         // Reserve the selected book
                         library.reserveBook(selectedBook, reader, LocalDate.parse(dateReserve));
                     }
+                    addActionToCSV("Reserve book");
                     break;
 
                 case "8":
@@ -327,6 +338,7 @@ public class ServiceMenu {
                         // Reserve the selected book
                         library.borrowBook(selectedBook, borrower, LocalDate.parse(dateReserve));
                     }
+                    addActionToCSV("Borrow book");
                     break;
 
                 case "9":
@@ -416,6 +428,7 @@ public class ServiceMenu {
                         System.out.println("No books were returned.");
                     }
 
+                    addActionToCSV("Return book");
                     break;
 
                 case "10":
@@ -423,12 +436,14 @@ public class ServiceMenu {
                     ReportBorrow overdueBorrow = new ReportBorrow(library.getSections());
                     overdueBorrow.generateReport();
 
+                    addActionToCSV("Generate overdue report");
                     break;
 
                 case "11":
                     ReportReserve overdueReserve = new ReportReserve(library.getSections());
                     overdueReserve.generateReport();
 
+                    addActionToCSV("Reset availability for overdue reservations");
                     break;
 
                 default:
@@ -589,6 +604,16 @@ public class ServiceMenu {
 //        library.generateOverdueReport();
 
         return library;
+    }
+
+    private void addActionToCSV(String action) {
+        String csvFile = "resources/audit.csv";
+        try (PrintWriter writer = new PrintWriter(new FileWriter(csvFile, true))) {
+            writer.println(action + "," + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        } catch (IOException e) {
+            System.err.println("Error writing to CSV file: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
 }
