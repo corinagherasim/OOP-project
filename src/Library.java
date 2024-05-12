@@ -1,8 +1,5 @@
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
@@ -30,7 +27,7 @@ public class Library implements Searchable {
     }
     public void addReaderToCSV(Reader reader) {
         readers.add(reader);
-        String csvFile = "C:\\Users\\Corina\\IdeaProjects\\OOP-project\\resources\\reader.csv";
+        String csvFile = "resources/reader.csv";
         try (PrintWriter writer = new PrintWriter(new FileWriter(csvFile, true))) {
             writer.println(reader.getName());
             System.out.println("Reader added to the CSV file.");
@@ -107,7 +104,7 @@ public class Library implements Searchable {
     }
 
     private void addBookToCSV(Book book) {
-        String csvFile = "C:\\Users\\Corina\\IdeaProjects\\OOP-project\\resources\\book.csv";
+        String csvFile = "resources/book.csv";
         try (PrintWriter writer = new PrintWriter(new FileWriter(csvFile, true))) {
             writer.println(book.getTitle() + "," + book.getAuthor().getName() + "," + book.getGenre());
             System.out.println("Book '" + book.getTitle() + "' added to the CSV file.");
@@ -148,7 +145,7 @@ public class Library implements Searchable {
     }
 
     private void removeBookFromCSV(String title) {
-        String filePath = "C:\\Users\\Corina\\IdeaProjects\\OOP-project\\resources\\book.csv";
+        String filePath = "resources/book.csv";
         List<String> updatedLines = new ArrayList<>();
 
         // Rewrite the CSV file excluding the removed book
@@ -453,7 +450,7 @@ public class Library implements Searchable {
     private void updateReaderInformationToCSV(String oldName, String newName) {
         List<String> lines = new ArrayList<>();
         // Read the existing contents of the CSV file and update the relevant line
-        try (BufferedReader fileReader = new BufferedReader(new FileReader("C:\\Users\\Corina\\IdeaProjects\\OOP-project\\resources\\reader.csv"))) {
+        try (BufferedReader fileReader = new BufferedReader(new FileReader("resources/reader.csv"))) {
             String line;
             while ((line = fileReader.readLine()) != null) {
                 if (line.equals(oldName)) {
@@ -466,13 +463,130 @@ public class Library implements Searchable {
             e.printStackTrace();
         }
         // Write the updated contents back to the CSV file
-        try (BufferedWriter fileWriter = new BufferedWriter(new FileWriter("C:\\Users\\Corina\\IdeaProjects\\OOP-project\\resources\\reader.csv"))) {
+        try (BufferedWriter fileWriter = new BufferedWriter(new FileWriter("resources/reader.csv"))) {
             for (String line : lines) {
                 fileWriter.write(line);
                 fileWriter.newLine();
             }
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    // Method to read authors from a CSV file
+//    public static List<String> readAuthorsFromCSV(String filePath) {
+//        List<String> authors = new ArrayList<>();
+//        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+//            String line;
+//            while ((line = reader.readLine()) != null) {
+//                authors.add(line.trim());
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        return authors;
+//    }
+//
+//    // Method to append a new author to a CSV file
+//    public static void appendAuthorToCSV(String author, String filePath) {
+//        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
+//            writer.write(author);
+//            writer.newLine();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
+//
+//    // Method to remove an author from a CSV file
+//    public static void removeAuthorFromCSV(String author, String filePath) {
+//        try (BufferedReader reader = new BufferedReader(new FileReader(filePath));
+//             BufferedWriter writer = new BufferedWriter(new FileWriter(filePath + ".tmp"))) {
+//            String line;
+//            while ((line = reader.readLine()) != null) {
+//                if (!line.trim().equals(author)) {
+//                    writer.write(line);
+//                    writer.newLine();
+//                }
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
+    public List<String> getAuthorsFromLibrary() {
+        List<String> authors = new ArrayList<>();
+        for (Book book : books) {
+            String authorName = book.getAuthor().getName();
+            if (!authors.contains(authorName)) {
+                authors.add(authorName);
+            }
+        }
+        return authors;
+    }
+
+    public static List<String> readAuthorsFromCSV(String filePath) {
+        List<String> authors = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            reader.readLine();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                authors.add(line.trim());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return authors;
+    }
+
+    // Method to append a new author to a CSV file
+    public void appendAuthorToCSV(String newAuthor) {
+        List<String> existingAuthors = readAuthorsFromCSV("resources/book.csv");
+
+        if (!existingAuthors.contains(newAuthor)) {
+            existingAuthors.add(newAuthor);
+
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter("resources/author.csv", true))) {
+                writer.write(newAuthor);
+                writer.newLine();
+                System.out.println("Author '" + newAuthor + "' appended to author.csv");
+            } catch (IOException e) {
+                System.err.println("Error appending author to author.csv: " + e.getMessage());
+            }
+        } else {
+            System.out.println("Author '" + newAuthor + "' already exists in author.csv");
+        }
+    }
+
+    // Method to remove an author from a CSV file
+    public void removeAuthorFromCSV(String authorToRemove) {
+        List<String> existingAuthors = readAuthorsFromCSV("resources/author.csv");
+
+        if (existingAuthors.contains(authorToRemove)) {
+            existingAuthors.remove(authorToRemove);
+
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter("resources/author.csv"))) {
+                for (String author : existingAuthors) {
+                    writer.write(author);
+                    writer.newLine();
+                }
+                System.out.println("Author '" + authorToRemove + "' removed from author.csv");
+            } catch (IOException e) {
+                System.err.println("Error removing author from author.csv: " + e.getMessage());
+            }
+        } else {
+            System.out.println("Author '" + authorToRemove + "' not found in author.csv");
+        }
+    }
+
+    public void displayAllAuthors() {
+        List<String> authors = readAuthorsFromCSV("resources/author.csv");
+
+        if (authors.isEmpty()) {
+            System.out.println("No authors found in our library");
+        } else {
+            System.out.println("Authors in our library:");
+            for (String author : authors) {
+                System.out.println(author);
+            }
         }
     }
 }

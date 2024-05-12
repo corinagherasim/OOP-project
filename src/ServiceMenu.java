@@ -117,6 +117,16 @@ public class ServiceMenu {
                     } catch (BookNotFoundException e) {
                         System.out.println("Error: " + e.getMessage());
                     }
+                    List<String> authorsFromFile = library.readAuthorsFromCSV("resources/author.csv");
+
+                    List<String> authorsInLibrary = library.getAuthorsFromLibrary();
+
+                    for (String author : authorsFromFile) {
+                        if (!authorsInLibrary.contains(author)) {
+                            // Remove extra author from author.csv
+                            library.removeAuthorFromCSV(author);
+                        }
+                    }
                     break;
                 case "4":
                     System.out.println("Search the book by:");
@@ -143,7 +153,8 @@ public class ServiceMenu {
                             }
                             break;
                         case "2":
-                            System.out.println("Author you want to search:");
+                            library.displayAllAuthors();
+                            System.out.println("Enter the author you want to search:");
                             String searchAuthor = scanner.nextLine();
                             try {
                                 List<Book> listByAuthor = library.searchByAuthor(searchAuthor);
@@ -439,15 +450,15 @@ public class ServiceMenu {
         Book book9 = new Book("The fault in our stars", new Author("John Green"), Genre.ROMANCE);
 
         // Create some readers
-        Reader reader1 = new Reader("Popescu Claudia");
-        Reader reader2 = new Reader("Georgescu George");
+        Reader reader1 = new Reader("maricica");
+        Reader reader2 = new Reader("marcel");
 
         // Create library
         Library library = new Library();
 
         library.displayAllReaders();
 //    reading books from csv
-        String filePathBook = "C:\\Users\\Corina\\IdeaProjects\\OOP-project\\resources\\book.csv";
+        String filePathBook = "resources/book.csv";
 
         // Create a list to store Book objects
         List<Book> books = new ArrayList<>();
@@ -492,7 +503,7 @@ public class ServiceMenu {
         }
 
 //        reading readers from csv
-        String filePathReader = "C:\\Users\\Corina\\IdeaProjects\\OOP-project\\resources\\reader.csv";
+        String filePathReader = "resources/reader.csv";
 
         // Create a list to store Reader objects
         List<Reader> readers = new ArrayList<>();
@@ -531,6 +542,28 @@ public class ServiceMenu {
             e.printStackTrace();
         }
 
+        List<String> authorsFromFile = library.readAuthorsFromCSV("resources/author.csv");
+
+// Get authors from the library
+        List<String> authorsInLibrary = library.getAuthorsFromLibrary();
+
+// Check for extra authors in author.csv
+        for (String author : authorsFromFile) {
+            if (!authorsInLibrary.contains(author)) {
+                // Remove extra author from author.csv
+                library.removeAuthorFromCSV(author);
+            }
+        }
+
+// Check for new authors in the library
+        for (String author : authorsInLibrary) {
+            if (!authorsFromFile.contains(author)) {
+                // Add new author to author.csv
+                library.appendAuthorToCSV(author);
+            }
+        }
+
+
         LocalDate borrowDate = LocalDate.parse("2024-01-26");
         library.borrowBook(book4, reader1, borrowDate);
 
@@ -557,4 +590,5 @@ public class ServiceMenu {
 
         return library;
     }
+
 }
