@@ -467,7 +467,7 @@ public class ServiceMenu {
     private Library addLocalStorage() {
         // Create library
 //        Library library = Library.getInstanceLibrary();
-        Library library = new Library();
+        Library library = Library.getInstanceLibrary();
 
         library.processBooksFromCSV();
 

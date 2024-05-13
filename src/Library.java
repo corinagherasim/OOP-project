@@ -5,19 +5,19 @@ import java.time.temporal.ChronoUnit;
 
 // Main Library class representing the library system
 public class Library implements Searchable {
-//    //    Singleton
-//    private static final Library library = new Library();
-//    private Library() {
-//    }
-//    public static Library getInstanceLibrary() {
-//        return library;
-//    }
     private Map<Genre, Section> sections; // Map of section name to Section object
     private List<Book> books; // List of all books in the library
     private Map<Book, LocalDate> borrowedBooks;
     private List<Reader> readers;
 
-    public Library() {
+    //    Singleton
+    private static final Library library = new Library();
+
+    public static Library getInstanceLibrary() {
+        return library;
+    }
+
+    private Library() {
         this.sections = new HashMap<>();
         this.books = new ArrayList<>();
         this.readers = new ArrayList<>();
