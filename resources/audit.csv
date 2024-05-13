@@ -1,5 +1,4 @@
 action, timestamp
-Display all books,2024-05-12T17:04:38
 Display all books,2024-05-12 17:05:35
 Search book by title,2024-05-12 17:11:16
 Search book by genre,2024-05-12 17:11:16
@@ -7,3 +6,23 @@ Add reader,2024-05-12 17:12:43
 Update reader information,2024-05-12 17:13:28
 Generate overdue report,2024-05-12 17:13:35
 Reset availability for overdue reservations,2024-05-12 17:13:39
+Display all books,2024-05-13 18:55:27
+Generate overdue report,2024-05-13 18:56:54
+Reset availability for overdue reservations,2024-05-13 18:57:06
+Reserve book,2024-05-13 19:12:21
+Borrow book,2024-05-13 19:16:05
+Return book,2024-05-13 19:20:37
+Return book,2024-05-13 19:25:17
+Return book,2024-05-13 19:26:38
+Return book,2024-05-13 19:26:55
+Return book,2024-05-13 19:28:12
+Generate overdue report,2024-05-13 19:38:38
+Reset availability for overdue reservations,2024-05-13 19:38:48
+Reset availability for overdue reservations,2024-05-13 19:39:48
+Generate overdue report,2024-05-13 19:39:56
+Display all books,2024-05-13 19:50:22
+Display all books,2024-05-13 19:53:13
+Update reader information,2024-05-13 19:53:37
+Update reader information,2024-05-13 20:33:04
+Update reader information,2024-05-13 20:34:56
+Update reader information,2024-05-13 20:35:24

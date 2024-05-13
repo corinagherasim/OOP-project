@@ -20,12 +20,10 @@ class Book {
     }
 
 
-    // Get the title of the book
     public String getTitle() {
         return title;
     }
 
-    // Get the author of the book
     public Author getAuthor() {
         return author;
     }

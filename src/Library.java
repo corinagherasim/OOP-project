@@ -5,6 +5,13 @@ import java.time.temporal.ChronoUnit;
 
 // Main Library class representing the library system
 public class Library implements Searchable {
+//    //    Singleton
+//    private static final Library library = new Library();
+//    private Library() {
+//    }
+//    public static Library getInstanceLibrary() {
+//        return library;
+//    }
     private Map<Genre, Section> sections; // Map of section name to Section object
     private List<Book> books; // List of all books in the library
     private Map<Book, LocalDate> borrowedBooks;
@@ -82,20 +89,16 @@ public class Library implements Searchable {
 
     //Add book to library
     public void addBook(Book book) {
-        Genre genre = book.getGenre(); // Get the genre of the book
-        // Add the book to the list of all books
+        Genre genre = book.getGenre();
         books.add(book);
-        // Find or create the appropriate section for the book
         Section section = sections.getOrDefault(genre, new Section());
         section.addBook(book);
         sections.put(genre, section);
     }
 
     public void addBookMenu(Book book) {
-        Genre genre = book.getGenre(); // Get the genre of the book
-        // Add the book to the list of all books
+        Genre genre = book.getGenre();
         books.add(book);
-        // Find or create the appropriate section for the book
         Section section = sections.getOrDefault(genre, new Section());
         section.addBook(book);
         sections.put(genre, section);
@@ -115,9 +118,7 @@ public class Library implements Searchable {
     }
 
     public void removeBookByTitle(String title) throws BookNotFoundException {
-        // To later check if the book has been found
         boolean bookRemoved = false;
-        // Iterate over the list of books in the library
         for (Book book : books) {
             // Check if the current book's title matches the specified title
             if (book.getTitle().equals(title)) {
@@ -189,7 +190,6 @@ public class Library implements Searchable {
 
                 // Iterate through each book in the section
                 for (Book book : section.getBooks()) {
-                    // Print book details
                     System.out.print(bookNumber + ". Title: " + book.getTitle() + ", Author: " + book.getAuthor().getName() + ", Availability: " + book.getAvailability());
 
                     // Check if the book is borrowed
@@ -198,7 +198,7 @@ public class Library implements Searchable {
                     } else if (book.getAvailability() == Availability.RESERVED) {
                         System.out.println(", Reserved by: " + book.getReserver().getName() + ", Reservation Date: " + book.getReservationDate());
                     } else {
-                        System.out.println(); // Print a new line if the book is not borrowed or reserved
+                        System.out.println();
                     }
 
                     bookNumber++;
@@ -206,35 +206,6 @@ public class Library implements Searchable {
             }
         }
     }
-
-//    public void generateOverdueReport() {
-//
-//        int borrowed = 0;
-//        System.out.println("Overdue Report:");
-//
-//        // Iterate through each genre
-//        for (Genre genre : sections.keySet()) {
-//            Section section = sections.get(genre);
-//
-//            // Check if the section is empty
-//            if (!section.getBooks().isEmpty()) {
-//                for (Book book : section.getBooks()) {
-//                    // Check if the book is borrowed
-//                    if (book.getAvailability() == Availability.BORROWED && LocalDate.now().isAfter(book.getBorrowDate().plusDays(30))) {
-//                        borrowed = 1;
-//                        LocalDate borrowDate = book.getBorrowDate();
-//                        long daysDifference = Math.abs(LocalDate.now().until(borrowDate, ChronoUnit.DAYS)) - 30;
-//                        System.out.println("Title: " + book.getTitle() + ", Author: " + book.getAuthor().getName() + ", Borrowed by: " + book.getBorrower().getName() + ", Borrowed Date: " + book.getBorrowDate() + ", Days Overdue: " + daysDifference);
-//                    }
-//                }
-//            }
-//        }
-//        if(borrowed == 0)
-//        {
-//            System.out.println("No overdue books found.");
-//        }
-//    }
-
 
     //Displays all the details about a book
     public void viewBookDetails(String title) {
@@ -436,9 +407,7 @@ public class Library implements Searchable {
 
 
     public void updateReaderInformation(Reader reader, String newName) {
-        // Check if the reader exists in the library's list of readers
         if (readers.contains(reader)) {
-            // Update the reader's information
             updateReaderInformationToCSV(reader.getName(),newName);
             reader.setName(newName);
             System.out.println("Reader information updated successfully.");
@@ -449,20 +418,17 @@ public class Library implements Searchable {
 
     private void updateReaderInformationToCSV(String oldName, String newName) {
         List<String> lines = new ArrayList<>();
-        // Read the existing contents of the CSV file and update the relevant line
         try (BufferedReader fileReader = new BufferedReader(new FileReader("resources/reader.csv"))) {
             String line;
             while ((line = fileReader.readLine()) != null) {
                 if (line.equals(oldName)) {
                     line = newName;
-                    System.out.println("works.");
                 }
                 lines.add(line);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        // Write the updated contents back to the CSV file
         try (BufferedWriter fileWriter = new BufferedWriter(new FileWriter("resources/reader.csv"))) {
             for (String line : lines) {
                 fileWriter.write(line);
@@ -473,45 +439,6 @@ public class Library implements Searchable {
         }
     }
 
-    // Method to read authors from a CSV file
-//    public static List<String> readAuthorsFromCSV(String filePath) {
-//        List<String> authors = new ArrayList<>();
-//        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-//            String line;
-//            while ((line = reader.readLine()) != null) {
-//                authors.add(line.trim());
-//            }
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        return authors;
-//    }
-//
-//    // Method to append a new author to a CSV file
-//    public static void appendAuthorToCSV(String author, String filePath) {
-//        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
-//            writer.write(author);
-//            writer.newLine();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    // Method to remove an author from a CSV file
-//    public static void removeAuthorFromCSV(String author, String filePath) {
-//        try (BufferedReader reader = new BufferedReader(new FileReader(filePath));
-//             BufferedWriter writer = new BufferedWriter(new FileWriter(filePath + ".tmp"))) {
-//            String line;
-//            while ((line = reader.readLine()) != null) {
-//                if (!line.trim().equals(author)) {
-//                    writer.write(line);
-//                    writer.newLine();
-//                }
-//            }
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
     public List<String> getAuthorsFromLibrary() {
         List<String> authors = new ArrayList<>();
         for (Book book : books) {
@@ -537,8 +464,7 @@ public class Library implements Searchable {
         return authors;
     }
 
-    // Method to append a new author to a CSV file
-    public void appendAuthorToCSV(String newAuthor) {
+    public void addAuthorToCSV(String newAuthor) {
         List<String> existingAuthors = readAuthorsFromCSV("resources/book.csv");
 
         if (!existingAuthors.contains(newAuthor)) {
@@ -556,7 +482,6 @@ public class Library implements Searchable {
         }
     }
 
-    // Method to remove an author from a CSV file
     public void removeAuthorFromCSV(String authorToRemove) {
         List<String> existingAuthors = readAuthorsFromCSV("resources/author.csv");
 
@@ -589,4 +514,165 @@ public class Library implements Searchable {
             }
         }
     }
+
+    public void processBooksFromCSV(){
+        //    Reading books from csv
+        String filePathBook = "resources/book.csv";
+
+        List<Book> books = new ArrayList<>();
+
+        try {
+            Scanner scanner = new Scanner(new File(filePathBook));
+            scanner.nextLine();
+
+            while (scanner.hasNextLine()) {
+                String[] tokens = scanner.nextLine().split(",");
+
+                String title = tokens[0].trim();
+                String authorName = tokens[1].trim();
+                Genre genre = Genre.valueOf(tokens[2].trim());
+
+                Author author = new Author(authorName);
+                Book book = new Book(title, author, genre);
+
+                books.add(book);
+            }
+            scanner.close();
+
+            for (Book book : books) {
+                addBook(book);
+            }
+
+            System.out.println("Books added to the library successfully!");
+        } catch (FileNotFoundException e) {
+            System.err.println("File not found: " + filePathBook);
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.err.println("An error occurred while reading the CSV file.");
+            e.printStackTrace();
+        }
+    }
+
+    public void processReadersFromCSV(){
+        //        Reading readers from csv
+        String filePathReader = "resources/reader.csv";
+
+        List<Reader> readers = new ArrayList<>();
+
+        try {
+            Scanner scanner = new Scanner(new File(filePathReader));
+            scanner.nextLine();
+
+            while (scanner.hasNextLine()) {
+                String name = scanner.nextLine().trim();
+
+                Reader reader = new Reader(name);
+                readers.add(reader);
+            }
+            scanner.close();
+
+            for (Reader reader : readers) {
+                addReader(reader);
+            }
+
+            System.out.println("Readers added to the library successfully!");
+        } catch (FileNotFoundException e) {
+            System.err.println("File not found: " + filePathReader);
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.err.println("An error occurred while reading the CSV file.");
+            e.printStackTrace();
+        }
+    }
+
+    public void processTransactionsFromCSV() {
+        String filePath = "resources/bookStatus.csv";
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            reader.readLine();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                int status = Integer.parseInt(parts[0].trim());
+                String readerName = parts[1].trim();
+                String bookTitle = parts[2].trim();
+                LocalDate date = LocalDate.parse(parts[3].trim());
+
+                switch (status) {
+                    case 0:
+                        // Return book
+                        Book returnBook = searchBook(bookTitle);
+                        if (returnBook != null) {
+                            returnBook(returnBook);
+                        } else {
+                            System.out.println("Book '" + bookTitle + "' not found in the library.");
+                        }
+                        break;
+                    case 1:
+                        // Reserve book
+                        Book reserveBook = searchBook(bookTitle);
+                        Reader reserveReader = searchReaderByName(readerName);
+                        if (reserveBook != null && reserveReader != null) {
+                            reserveBook(reserveBook, reserveReader, date);
+                        } else {
+                            System.out.println("Book or reader not found in the library.");
+                        }
+                        break;
+                    case 2:
+                        // Borrow book
+                        Book borrowBook = searchBook(bookTitle);
+                        Reader borrowReader = searchReaderByName(readerName);
+                        if (borrowBook != null && borrowReader != null) {
+                            borrowBook(borrowBook, borrowReader, date);
+                        } else {
+                            System.out.println("Book or reader not found in the library.");
+                        }
+                        break;
+                    default:
+                        System.out.println("Invalid status in CSV.");
+                        break;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public void addTransactionToCSV(int status, String readerName, String bookTitle, LocalDate date) {
+        String csvFile = "resources/bookStatus.csv";
+        try (PrintWriter writer = new PrintWriter(new FileWriter(csvFile, true))) {
+            writer.println( status + "," + readerName + "," + bookTitle + "," + date);
+        } catch (IOException e) {
+            System.err.println("Error writing to CSV file: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    public void updateReaderNameInTransactions(String oldName, String newName) {
+        String transactionsFilePath = "resources/bookStatus.csv";
+        List<String> updatedLines = new ArrayList<>();
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(transactionsFilePath))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                if (parts.length >= 2 && parts[1].trim().equals(oldName)) {
+                    parts[1] = newName;
+                    line = String.join(",", parts);
+                }
+                updatedLines.add(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Write the updated contents back to the CSV file
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(transactionsFilePath))) {
+            for (String updatedLine : updatedLines) {
+                writer.write(updatedLine);
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

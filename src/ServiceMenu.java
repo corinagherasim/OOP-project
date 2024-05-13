@@ -111,6 +111,13 @@ public class ServiceMenu {
 
                     Book book = new Book(bookTitle, new Author(bookAuthor), bookGenre);
                     library.addBookMenu(book);
+                    List<String> authorsFromFile = library.readAuthorsFromCSV("resources/author.csv");
+                    List<String> authorsInLibrary = library.getAuthorsFromLibrary();
+                    for (String author : authorsInLibrary) {
+                        if (!authorsFromFile.contains(author)) {
+                            library.addAuthorToCSV(author);
+                        }
+                    }
                     addActionToCSV("Add book");
                     break;
                 case "3":
@@ -118,20 +125,18 @@ public class ServiceMenu {
                         System.out.println("Enter the title of the book you want to remove:");
                         String removedBookTitle = scanner.nextLine();
                         library.removeBookByTitle(removedBookTitle);
+                        addActionToCSV("Remove book");
                     } catch (BookNotFoundException e) {
                         System.out.println("Error: " + e.getMessage());
                     }
-                    List<String> authorsFromFile = library.readAuthorsFromCSV("resources/author.csv");
-
-                    List<String> authorsInLibrary = library.getAuthorsFromLibrary();
-
+                    authorsFromFile = library.readAuthorsFromCSV("resources/author.csv");
+                    authorsInLibrary = library.getAuthorsFromLibrary();
                     for (String author : authorsFromFile) {
                         if (!authorsInLibrary.contains(author)) {
-                            // Remove extra author from author.csv
                             library.removeAuthorFromCSV(author);
                         }
                     }
-                    addActionToCSV("Remove book");
+
                     break;
                 case "4":
                     System.out.println("Search the book by:");
@@ -221,11 +226,11 @@ public class ServiceMenu {
                             } catch (BookNotFoundException e) {
                                 System.out.println("Error: " + e.getMessage());
                             }
+                            addActionToCSV("Search book by genre");
                             break;
                         default:
                             System.out.println("Invalid option");
                     }
-                    addActionToCSV("Search book by genre");
                     break;
 
                 case "5":
@@ -239,10 +244,11 @@ public class ServiceMenu {
                             Reader reader = new Reader(name);
                             library.addReaderToCSV(reader);
                             System.out.println("Reader '" + name + "' added to the library.");
+                            addActionToCSV("Add reader");
                             break;
                         }
                     } while (true);
-                    addActionToCSV("Add reader");
+
                     break;
 
                 case "6":
@@ -255,12 +261,13 @@ public class ServiceMenu {
                         } else {
                             System.out.print("Enter new name: ");
                             String newName = scanner.nextLine();
-
                             library.updateReaderInformation(library.searchReaderByName(name), newName);
+                            library.updateReaderNameInTransactions(name,newName);
+                            addActionToCSV("Update reader information");
                             break;
                         }
                     } while (true);
-                    addActionToCSV("Update reader information");
+
                     break;
 
                 case "7":
@@ -298,8 +305,10 @@ public class ServiceMenu {
 
                         // Reserve the selected book
                         library.reserveBook(selectedBook, reader, LocalDate.parse(dateReserve));
+                        library.addTransactionToCSV(1,reader.getName(),selectedBook.getTitle(),LocalDate.parse(dateReserve));
+                        addActionToCSV("Reserve book");
                     }
-                    addActionToCSV("Reserve book");
+
                     break;
 
                 case "8":
@@ -333,17 +342,20 @@ public class ServiceMenu {
 
                         // Prompt the user to enter the reservation date
                         System.out.print("Enter the date of the reservation (YYYY-MM-DD): ");
-                        String dateReserve = scanner.nextLine();
+                        String dateBorrow = scanner.nextLine();
 
                         // Reserve the selected book
-                        library.borrowBook(selectedBook, borrower, LocalDate.parse(dateReserve));
+                        library.borrowBook(selectedBook, borrower, LocalDate.parse(dateBorrow));
+                        library.addTransactionToCSV(2,borrower.getName(),selectedBook.getTitle(),LocalDate.parse(dateBorrow));
+                        addActionToCSV("Borrow book");
                     }
-                    addActionToCSV("Borrow book");
+
                     break;
 
                 case "9":
                     boolean validName = false;
                     String name;
+                    int var = 1;
 
                     do {
                         System.out.print("Enter name: ");
@@ -381,10 +393,9 @@ public class ServiceMenu {
                                 for (Book bk : matchingBooksTitle) {
                                     System.out.println("Title: " + bk.getTitle() + ", Author: " + bk.getAuthor().getName());
                                 }
-                            } else {
-                                System.out.println("No books with the title '" + title + "' found.");
                             }
                         } catch (BookNotFoundException e) {
+                            var = 0;
                             System.out.println("Error: " + e.getMessage());
                         }
                     } else {
@@ -397,38 +408,39 @@ public class ServiceMenu {
                                 for (Book bk : matchingBooksAuthor) {
                                     System.out.println("Title: " + bk.getTitle() + ", Author: " + bk.getAuthor().getName());
                                 }
-                            } else {
-                                System.out.println("No books with the author '" + author + "' found.");
                             }
                         } catch (BookNotFoundException e) {
+                            var = 0;
                             System.out.println("Error: " + e.getMessage());
                         }
                     }
 
-                    System.out.print("Do you want to return a book? (y/n): ");
-                    String response = scanner.nextLine().toLowerCase();
+                    if(var != 0){
+                        System.out.print("Do you want to return a book? (y/n): ");
+                        String response = scanner.nextLine().toLowerCase();
 
-                    while (!response.equals("y") && !response.equals("n")) {
-                        System.out.print("Invalid option. Please enter 'y' or 'n': ");
-                        response = scanner.nextLine().toLowerCase();
-                    }
-
-                    if (response.equals("y")) {
-                        System.out.print("Enter the title of the book you want to return: ");
-                        String title = scanner.nextLine();
-
-                        Book bookToReturn = library.searchBook(title);
-
-                        if (bookToReturn != null) {
-                            library.returnBook(bookToReturn);
-                        } else {
-                            System.out.println("Book not found.");
+                        while (!response.equals("y") && !response.equals("n")) {
+                            System.out.print("Invalid option. Please enter 'y' or 'n': ");
+                            response = scanner.nextLine().toLowerCase();
                         }
-                    } else {
-                        System.out.println("No books were returned.");
-                    }
 
-                    addActionToCSV("Return book");
+                        if (response.equals("y")) {
+                            System.out.print("Enter the title of the book you want to return: ");
+                            String title = scanner.nextLine();
+
+                            Book bookToReturn = library.searchBook(title);
+
+                            if (bookToReturn != null) {
+                                library.returnBook(bookToReturn);
+                                library.addTransactionToCSV(0,borrower.getName(),bookToReturn.getTitle(),LocalDate.now());
+                                addActionToCSV("Return book");
+                            } else {
+                                System.out.println("Book not found.");
+                            }
+                        } else {
+                            System.out.println("No books were returned.");
+                        }
+                    }
                     break;
 
                 case "10":
@@ -453,109 +465,13 @@ public class ServiceMenu {
     }
 
     private Library addLocalStorage() {
-        // Create some books
-        Book book1 = new Book("Harry Potter and the Philosopher's Stone", new Author("J.K. Rowling"), Genre.FICTION);
-        Book book2 = new Book("Pride and Prejudice", new Author("Jane Austen"), Genre.ROMANCE);
-        Book book3 = new Book("The Shining", new Author("Stephen King"), Genre.HORROR);
-        Book book4 = new Book("The Great Gatsby", new Author("F. Scott Fitzgerald"), Genre.FICTION);
-        Book book5 = new Book("Murder on the Orient Express", new Author("Agatha Christie"), Genre.MYSTERY);
-        Book book6 = new Book("Steve Jobs", new Author("Walter Isaacson"), Genre.NON_FICTION);
-        Book book7 = new Book("The Little Prince", new Author("Antoine de Saint-Exupéry"), Genre.KIDS);
-        Book book8 = new Book("Harry Potter and the Chamber of Secrets", new Author("J.K. Rowling"), Genre.FICTION);
-        Book book9 = new Book("The fault in our stars", new Author("John Green"), Genre.ROMANCE);
-
-        // Create some readers
-        Reader reader1 = new Reader("maricica");
-        Reader reader2 = new Reader("marcel");
-
         // Create library
+//        Library library = Library.getInstanceLibrary();
         Library library = new Library();
 
-        library.displayAllReaders();
-//    reading books from csv
-        String filePathBook = "resources/book.csv";
+        library.processBooksFromCSV();
 
-        // Create a list to store Book objects
-        List<Book> books = new ArrayList<>();
-
-        try {
-            // Open the CSV file
-            Scanner scanner = new Scanner(new File(filePathBook));
-            scanner.nextLine(); // Skip the header line
-
-            // Read each line of the file
-            while (scanner.hasNextLine()) {
-                // Split the line into tokens based on comma
-                String[] tokens = scanner.nextLine().split(",");
-
-                // Extract information from the tokens
-                String title = tokens[0].trim();
-                String authorName = tokens[1].trim();
-                Genre genre = Genre.valueOf(tokens[2].trim()); // Convert the string to Genre enum
-
-                // Create Book and Author objects
-                Author author = new Author(authorName);
-                Book book = new Book(title, author, genre);
-
-                // Add the Book to the list
-                books.add(book);
-            }
-            scanner.close();
-
-            // Now you have a list of Book objects ready to be added to the library
-            // Assuming you have a Library object named 'library'
-            for (Book book : books) {
-                library.addBook(book);
-            }
-            // Print a message to indicate successful addition
-            System.out.println("Books added to the library successfully!");
-        } catch (FileNotFoundException e) {
-            System.err.println("File not found: " + filePathBook);
-            e.printStackTrace();
-        } catch (Exception e) {
-            System.err.println("An error occurred while reading the CSV file.");
-            e.printStackTrace();
-        }
-
-//        reading readers from csv
-        String filePathReader = "resources/reader.csv";
-
-        // Create a list to store Reader objects
-        List<Reader> readers = new ArrayList<>();
-
-        try {
-            // Open the CSV file
-            Scanner scanner = new Scanner(new File(filePathReader));
-            scanner.nextLine(); // Skip the header line
-
-            // Read each line of the file
-            while (scanner.hasNextLine()) {
-                // Extract name from the line
-                String name = scanner.nextLine().trim();
-
-                // Create Reader object
-                Reader reader = new Reader(name);
-
-                // Add the Reader to the list
-                readers.add(reader);
-            }
-            scanner.close();
-
-            // Now you have a list of Reader objects ready to be added to the library
-            // Assuming you have a Library object named 'library'
-            for (Reader reader : readers) {
-                library.addReader(reader);
-            }
-
-            // Print a message to indicate successful addition
-            System.out.println("Readers added to the library successfully!");
-        } catch (FileNotFoundException e) {
-            System.err.println("File not found: " + filePathReader);
-            e.printStackTrace();
-        } catch (Exception e) {
-            System.err.println("An error occurred while reading the CSV file.");
-            e.printStackTrace();
-        }
+        library.processReadersFromCSV();
 
         List<String> authorsFromFile = library.readAuthorsFromCSV("resources/author.csv");
 
@@ -565,7 +481,6 @@ public class ServiceMenu {
 // Check for extra authors in author.csv
         for (String author : authorsFromFile) {
             if (!authorsInLibrary.contains(author)) {
-                // Remove extra author from author.csv
                 library.removeAuthorFromCSV(author);
             }
         }
@@ -573,35 +488,11 @@ public class ServiceMenu {
 // Check for new authors in the library
         for (String author : authorsInLibrary) {
             if (!authorsFromFile.contains(author)) {
-                // Add new author to author.csv
-                library.appendAuthorToCSV(author);
+                library.addAuthorToCSV(author);
             }
         }
 
-
-        LocalDate borrowDate = LocalDate.parse("2024-01-26");
-        library.borrowBook(book4, reader1, borrowDate);
-
-        library.borrowBook(book2, reader2, LocalDate.parse("2024-02-26"));
-        library.reserveBook(book3, reader2, LocalDate.parse("2024-03-26"));
-
-        library.checkAvailability(book4);
-
-        library.returnBook(book4);
-
-        library.checkAvailability(book4);
-
-        LocalDate reserveDate = LocalDate.parse("2024-02-26");
-
-        library.reserveBook(book4, reader2, reserveDate);
-        library.reserveBook(book4, reader1, LocalDate.parse("2024-05-03"));
-
-        library.checkAvailability(book4);
-
-        library.borrowBook(book4, reader2, LocalDate.parse("2024-05-04"));
-        library.borrowBook(book4, reader1, LocalDate.parse("2024-05-04"));
-
-//        library.generateOverdueReport();
+        library.processTransactionsFromCSV();
 
         return library;
     }
