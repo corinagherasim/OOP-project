@@ -32,6 +32,7 @@ public class Library implements Searchable {
     public void addReader(Reader reader) {
         readers.add(reader);
     }
+
     public void addReaderToCSV(Reader reader) {
         readers.add(reader);
         String csvFile = "resources/reader.csv";
@@ -375,7 +376,6 @@ public class Library implements Searchable {
 
             // Remove the book from the library's borrowed books map
             borrowedBooks.remove(book);
-
             System.out.println("Book '" + book.getTitle() + "' has been returned.");
         } else {
             System.out.println("This book is not borrowed and cannot be returned.");
@@ -473,9 +473,8 @@ public class Library implements Searchable {
             try (BufferedWriter writer = new BufferedWriter(new FileWriter("resources/author.csv", true))) {
                 writer.write(newAuthor);
                 writer.newLine();
-                System.out.println("Author '" + newAuthor + "' appended to author.csv");
             } catch (IOException e) {
-                System.err.println("Error appending author to author.csv: " + e.getMessage());
+                System.err.println("Error adding author to author.csv: " + e.getMessage());
             }
         } else {
             System.out.println("Author '" + newAuthor + "' already exists in author.csv");

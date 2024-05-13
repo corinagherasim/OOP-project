@@ -2,9 +2,10 @@ status(0-return,1-reserve,2-borrow),reader,book,date
 2,Popescu Claudiu,The Shining,2024-03-10
 2,Barbu Robert,Steve Jobs,2024-03-15
 1,Oprea Ana,The fault in our stars,2024-03-20
-2,Oprea Ana,The fault in our stars,2024-03-25
 2,Ionescu Adina,The Great Gatsby,2024-04-29
 0,Barbu Robert,Steve Jobs,2024-04-10
 1,Georgescu Alexandru,The Little Prince,2024-05-13
 2,Popescu Claudiu,Pride and Prejudice,2024-05-13
 0,Popescu Claudiu,Pride and Prejudice,2024-05-13
+1,Oprea Ana,Pride and Prejudice,2024-05-12
+2,Costache Maria,Steve Jobs,2024-05-14

@@ -356,6 +356,7 @@ public class ServiceMenu {
                     boolean validName = false;
                     String name;
                     int var = 1;
+                    String titleReturn = null;
 
                     do {
                         System.out.print("Enter name: ");
@@ -385,9 +386,9 @@ public class ServiceMenu {
 
                     if (choice == 1) {
                         System.out.print("Enter the title of the book: ");
-                        String title = scanner.nextLine();
+                        titleReturn = scanner.nextLine();
                         try {
-                            List<Book> matchingBooksTitle = borrower.searchByTitle(title);
+                            List<Book> matchingBooksTitle = borrower.searchByTitle(titleReturn);
                             if (!matchingBooksTitle.isEmpty()) {
                                 System.out.println("The reader borrowed these books:");
                                 for (Book bk : matchingBooksTitle) {
@@ -425,10 +426,12 @@ public class ServiceMenu {
                         }
 
                         if (response.equals("y")) {
-                            System.out.print("Enter the title of the book you want to return: ");
-                            String title = scanner.nextLine();
+                            if (titleReturn == null) {
+                                System.out.print("Enter the title of the book you want to return: ");
+                                titleReturn = scanner.nextLine();
+                            }
 
-                            Book bookToReturn = library.searchBook(title);
+                            Book bookToReturn = library.searchBook(titleReturn);
 
                             if (bookToReturn != null) {
                                 library.returnBook(bookToReturn);
@@ -497,7 +500,7 @@ public class ServiceMenu {
         return library;
     }
 
-    private void addActionToCSV(String action) {
+    public void addActionToCSV(String action) {
         String csvFile = "resources/audit.csv";
         try (PrintWriter writer = new PrintWriter(new FileWriter(csvFile, true))) {
             writer.println(action + "," + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
