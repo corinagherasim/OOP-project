@@ -304,9 +304,11 @@ public class ServiceMenu {
                         String dateReserve = scanner.nextLine();
 
                         // Reserve the selected book
-                        library.reserveBook(selectedBook, reader, LocalDate.parse(dateReserve));
-                        library.addTransactionToCSV(1,reader.getName(),selectedBook.getTitle(),LocalDate.parse(dateReserve));
-                        addActionToCSV("Reserve book");
+                        if (library.reserveBook(selectedBook, reader, LocalDate.parse(dateReserve))){
+                            library.addTransactionToCSV(1,reader.getName(),selectedBook.getTitle(),LocalDate.parse(dateReserve));
+                            addActionToCSV("Reserve book");
+                        }
+
                     }
 
                     break;
@@ -340,14 +342,15 @@ public class ServiceMenu {
                         // Get the selected book
                         Book selectedBook = library.getBookByNumber(bookNr);
 
-                        // Prompt the user to enter the reservation date
+                        // Prompt the user to enter the borrow date
                         System.out.print("Enter the date of the reservation (YYYY-MM-DD): ");
                         String dateBorrow = scanner.nextLine();
 
-                        // Reserve the selected book
-                        library.borrowBook(selectedBook, borrower, LocalDate.parse(dateBorrow));
-                        library.addTransactionToCSV(2,borrower.getName(),selectedBook.getTitle(),LocalDate.parse(dateBorrow));
-                        addActionToCSV("Borrow book");
+                        // Borrow the selected book
+                        if (library.borrowBook(selectedBook, borrower, LocalDate.parse(dateBorrow))){
+                            library.addTransactionToCSV(2,borrower.getName(),selectedBook.getTitle(),LocalDate.parse(dateBorrow));
+                            addActionToCSV("Borrow book");
+                        }
                     }
 
                     break;
@@ -447,7 +450,6 @@ public class ServiceMenu {
                     break;
 
                 case "10":
-//                    library.generateOverdueReport();
                     ReportBorrow overdueBorrow = new ReportBorrow(library.getSections());
                     overdueBorrow.generateReport();
 
@@ -469,7 +471,6 @@ public class ServiceMenu {
 
     private Library addLocalStorage() {
         // Create library
-//        Library library = Library.getInstanceLibrary();
         Library library = Library.getInstanceLibrary();
 
         library.processBooksFromCSV();
@@ -478,17 +479,17 @@ public class ServiceMenu {
 
         List<String> authorsFromFile = library.readAuthorsFromCSV("resources/author.csv");
 
-// Get authors from the library
+        // Get authors from the library
         List<String> authorsInLibrary = library.getAuthorsFromLibrary();
 
-// Check for extra authors in author.csv
+        // Check for extra authors in author.csv
         for (String author : authorsFromFile) {
             if (!authorsInLibrary.contains(author)) {
                 library.removeAuthorFromCSV(author);
             }
         }
 
-// Check for new authors in the library
+        // Check for new authors in the library
         for (String author : authorsInLibrary) {
             if (!authorsFromFile.contains(author)) {
                 library.addAuthorToCSV(author);
@@ -500,6 +501,7 @@ public class ServiceMenu {
         return library;
     }
 
+    //Auditing service
     public void addActionToCSV(String action) {
         String csvFile = "resources/audit.csv";
         try (PrintWriter writer = new PrintWriter(new FileWriter(csvFile, true))) {

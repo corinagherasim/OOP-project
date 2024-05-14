@@ -295,12 +295,14 @@ public class Library implements Searchable {
 
 
     // Check the availability of a book
-    public void borrowBook(Book book, Reader borrower, LocalDate borrowDate) {
+    public boolean borrowBook(Book book, Reader borrower, LocalDate borrowDate) {
+        boolean borrowedSuccessfully = false;
         if (book.getAvailability() == Availability.AVAILABLE) {
             book.setAvailability(Availability.BORROWED);
             book.setBorrower(borrower);
             book.setBorrowDate(borrowDate);
             borrower.borrowBook(book);
+            borrowedSuccessfully = true;
             System.out.println("Book '" + book.getTitle() + "' borrowed by " + borrower.getName() + " on " + borrowDate);
         } else if (book.getAvailability() == Availability.RESERVED) {
             if (book.getReserver() != null && book.getReserver().equals(borrower)) {
@@ -308,6 +310,7 @@ public class Library implements Searchable {
                 book.setBorrower(borrower);
                 book.setBorrowDate(borrowDate);
                 borrower.borrowBook(book);
+                borrowedSuccessfully = true;
                 System.out.println("Book '" + book.getTitle() + "' borrowed by " + borrower.getName() + " on " + borrowDate);
             } else {
                 LocalDate reservationDate = book.getReservationDate();
@@ -316,6 +319,7 @@ public class Library implements Searchable {
                     book.setBorrower(borrower);
                     book.setBorrowDate(borrowDate);
                     borrower.borrowBook(book);
+                    borrowedSuccessfully = true;
                     System.out.println("Book '" + book.getTitle() + "' borrowed by " + borrower.getName() + " on " + borrowDate);
                 } else {
                     System.out.println("Book '" + book.getTitle() + "' is reserved by someone else and cannot be borrowed by " + borrower.getName() + ".");
@@ -324,6 +328,7 @@ public class Library implements Searchable {
         } else {
             System.out.println("Book '" + book.getTitle() + "' is not available for borrowing by " + borrower.getName() + ".");
         }
+        return borrowedSuccessfully;
     }
 
 
@@ -384,11 +389,13 @@ public class Library implements Searchable {
 
 
     // Reserve a book
-    public void reserveBook(Book book, Reader reader, LocalDate reserveDate) {
+    public boolean reserveBook(Book book, Reader reader, LocalDate reserveDate) {
+        boolean reservationSuccessfully = false;
         if (book.getAvailability() == Availability.AVAILABLE) {
             book.setAvailability(Availability.RESERVED);
             book.setReservationDate(reserveDate);
             book.setReserver(reader);
+            reservationSuccessfully = true;
             System.out.println("Book '" + book.getTitle() + "' has been reserved by " + reader.getName() + " on " + reserveDate);
         } else if (book.getAvailability() == Availability.RESERVED) {
             LocalDate reservationDate = book.getReservationDate();
@@ -396,6 +403,7 @@ public class Library implements Searchable {
                 book.setAvailability(Availability.RESERVED);
                 book.setReservationDate(reserveDate);
                 book.setReserver(reader);
+                reservationSuccessfully = true;
                 System.out.println("Book '" + book.getTitle() + "' has been reserved by " + reader.getName() + " on " + reserveDate);
             } else {
                 System.out.println("Sorry, the book '" + book.getTitle() + "' is already reserved by someone else and cannot be reserved by " + reader.getName() + ".");
@@ -403,6 +411,7 @@ public class Library implements Searchable {
         } else {
             System.out.println("Sorry, the book '" + book.getTitle() + "' is not available for reservation.");
         }
+        return reservationSuccessfully;
     }
 
 
