@@ -28,3 +28,15 @@ files
 * An auditing service will need to be created that will log to a CSV file each time an action
 defined in the service is performed. Structure of the file: name_of_action,timestamp
 
+### Menu actions:
+*   Display all books in the library
+*   Add books to the library
+*   Remove books from the library
+*   Search books by title, author or genre
+*   Add reader to the library
+*   Update reader information
+*   Reserve book for 30 days
+*   Borrow book
+*   Return book
+*   Generate overdue report for borrowed books
+*   Reset availability for overdue reservations
