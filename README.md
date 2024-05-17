@@ -40,3 +40,11 @@ defined in the service is performed. Structure of the file: name_of_action,times
 *   Return book
 *   Generate overdue report for borrowed books
 *   Reset availability for overdue reservations
+
+### Structure of the project
+
+
+### Design Patterns:
+We used the Singleton design pattern for 2 classes:
+* ServiceMenu: only one instance of the interactive menu can be created and its methods are called in the Main class.
+* Library: only one instance can be created and used to ensure that the CSV files are updated properly
