@@ -28,6 +28,33 @@ files
 * An auditing service will need to be created that will log to a CSV file each time an action
 defined in the service is performed. Structure of the file: name_of_action,timestamp
 
+### Classes used:
+* ServiceMenu - contains an interactive menu 
+* Library - manages the collection of books, readers, and transactions
+* Book - contains details about the book, including its title, author, genre, availability status, borrower information, and reservation details
+* Section - category of a book based on its genre
+* Person - base class
+* Author - extends the Person class and is used for the books
+* Reader - extends the Person class and contains a list of books borrowed by them
+* Report - abstract class that has the method for generating reports and is extended by ReportBorrow and ReportReserve
+* ReportBorrow - inherits the Report class and is used for generating an overdue borrow report
+* ReportReserve - inherits the Report class and is used for generating an overdue reservervation report and resets the availability of the books
+* BookNotFound - custom exception for books that are not found
+
+### Interface used:
+Searchable - contains methods that are used for searching books by author and by title in a list of books and is implemented in Library and Reader classes
+
+### Design Patterns
+We used the Singleton design pattern for 2 classes:
+* ServiceMenu: only one instance of the interactive menu can be created and its methods are called in the Main class
+* Library: only one instance can be created and used to ensure that the CSV files are updated properly
+
+### Services
+The application features 3 services:
+* Auditing Service: Logs the actions performed in the application in a csv file (audit.csv)
+* Data Service: Retrieves from csv files all the informations about authors (author.csv), books (book.csv), book transactions (bookStatus.csv) and readers (reader.csv)    
+* Menu Service: This is the main service that is used to interact with all the objects in the application
+
 ### Menu actions:
 *   Display all books in the library
 *   Add books to the library
@@ -40,11 +67,3 @@ defined in the service is performed. Structure of the file: name_of_action,times
 *   Return book
 *   Generate overdue report for borrowed books
 *   Reset availability for overdue reservations
-
-### Structure of the project
-
-
-### Design Patterns:
-We used the Singleton design pattern for 2 classes:
-* ServiceMenu: only one instance of the interactive menu can be created and its methods are called in the Main class.
-* Library: only one instance can be created and used to ensure that the CSV files are updated properly
